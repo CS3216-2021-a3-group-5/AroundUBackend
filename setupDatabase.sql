@@ -2,74 +2,95 @@ DROP DATABASE IF EXISTS api;
 CREATE DATABASE api;
 \c api
 
-DROP TABLE IF EXISTS store_account;
-CREATE TABLE store_account
+DROP TABLE IF EXISTS promotion_store;
+DROP TABLE IF EXISTS promotion_pictures;
+DROP TABLE IF EXISTS promotions;
+DROP TABLE IF EXISTS stores;
+DROP TABLE IF EXISTS companies;
+DROP TABLE IF EXISTS categories;
+
+CREATE TABLE categories
 (
-    id             SERIAL PRIMARY KEY,
+    category VARCHAR(100) PRIMARY KEY
+);
+
+INSERT INTO categories (category)
+VALUES
+    ('Beauty and Wellness'),
+    ('Electronics'),
+    ('Fashion'),
+    ('Food'),
+    ('Others');
+
+CREATE TABLE companies
+(
     name           VARCHAR(100) UNIQUE NOT NULL,
-    email          VARCHAR(100) UNIQUE NOT NULL,
-    password       VARCHAR(100) NOT NULL,
-    logo           VARCHAR(100) NOT NULL,
-    opening_hours  VARCHAR(300) NOT NULL,
-    contact_number NUMERIC      NOT NULL
+    email          VARCHAR(100) PRIMARY KEY,
+    password       VARCHAR(100)        NOT NULL,
+    logo_path      VARCHAR(100)        NOT NULL,
+    contact_number NUMERIC             NOT NULL,
+    category       VARCHAR(100)        NOT NULL REFERENCES categories (category)
 );
 
-INSERT INTO store_account (name, email, password, logo, opening_hours, contact_number)
+INSERT INTO companies (name, email, password, logo_path, contact_number, category)
 VALUES
-       ('Store 1', 'store1@email.com', 'password1', 'store1.jpg', '8 am to 8 pm daily', 11111111),
-       ('Store 2', 'store12@email.com', 'password12', 'store12.jpg', '9 am to 9 pm daily', 11111111),
-       ('Store 3', 'store123@email.com', 'password123', 'store123.jpg', '10 am to 10 pm daily', 11111111);
+       ('Company 1', 'Company1@email.com', 'password1', 'Company1.jpg', 11111111, 'Electronics'),
+       ('Company 2', 'Company12@email.com', 'password12', 'Company12.jpg', 11111111, 'Food'),
+       ('Company 3', 'Company123@email.com', 'password123', 'Company123.jpg', 11111111, 'Fashion');
 
-DROP TABLE IF EXISTS store_location;
-CREATE TABLE store_location
+CREATE TABLE stores
 (
-    name      VARCHAR(100) REFERENCES store_account (name),
-    longitude NUMERIC      NOT NULL,
-    latitude  NUMERIC      NOT NULL,
-    address   VARCHAR(300) NOT NULL,
-    PRIMARY KEY (name, longitude, latitude)
+    id            SERIAL PRIMARY KEY,
+    company_name  VARCHAR(100) NOT NULL REFERENCES companies (name) ON DELETE CASCADE,
+    longitude     NUMERIC      NOT NULL,
+    latitude      NUMERIC      NOT NULL,
+    address       VARCHAR(300) NOT NULL,
+    opening_hours VARCHAR(300) NOT NULL
 );
 
-INSERT INTO store_location (name, longitude, latitude, address)
+INSERT INTO stores (company_name, longitude, latitude, address, opening_hours)
 VALUES
-       ('Store 1', 1.01, 1.001, 'store1 road #111'),
-       ('Store 2', 1.02, 1.002, 'store2 road #222'),
-       ('Store 3', 1.03, 1.003, 'store3 road #333');
+       ('Company 1', 1.01, 1.001, 'store1 road #111', '8 am to 9 pm'),
+       ('Company 2', 1.02, 1.002, 'store2 road #222', '8 am to 9 pm'),
+       ('Company 2', 1.03, 1.003, 'store3 road #333', '8 am to 9 pm');
 
-DROP TABLE IF EXISTS promotion;
-CREATE TABLE promotion
+CREATE TABLE promotions
 (
-    id          SERIAL PRIMARY KEY,
-    name        VARCHAR(30)  NOT NULL,
-    category    VARCHAR(30)  NOT NULL,
-    longitude   NUMERIC      NOT NULL,
-    latitude    NUMERIC      NOT NULL,
-    start_date  DATE         NOT NULL,
-    end_date    DATE         NOT NULL,
-    details     TEXT         NOT NULL,
-    description VARCHAR(100) NOT NULL,
-    store_name  VARCHAR(100) NOT NULL,
-    FOREIGN KEY (store_name, longitude, latitude) REFERENCES store_location(name, longitude, latitude)
+    id       SERIAL PRIMARY KEY,
+    name     VARCHAR(30)  NOT NULL,
+    category VARCHAR(100) NOT NULL REFERENCES categories (category),
+    end_date DATE         NOT NULL,
+    details  TEXT         NOT NULL
 );
 
-INSERT INTO promotion (name, category, longitude, latitude, start_date, end_date, details, description, store_name)
+INSERT INTO promotions (name, category, end_date, details)
 VALUES
-       ('promo 1', 'category', 1.01, 1.001, '2021-12-12', '2021-12-12', '1 long description here', '1 great promo', 'Store 1'),
-       ('promo 2', 'category', 1.02, 1.002, '2021-12-12', '2021-12-12', '2 long description here', '2 great promo', 'Store 2'),
-       ('promo 3', 'category', 1.03, 1.003, '2021-12-12', '2021-12-12', '3 long description here', '3 great promo', 'Store 3'),
-       ('promo 4', 'category', 1.02, 1.002, '2021-12-12', '2021-12-12', '4 long description here', '4 great promo', 'Store 2'),
-       ('promo 5', 'category', 1.03, 1.003, '2021-12-12', '2021-12-12', '5 long description here', '5 great promo', 'Store 3');
+       ('promo 1', 'Electronics', '2021-12-12', '1 long description here'),
+       ('promo 2', 'Food', '2021-12-12', '2 long description here'),
+       ('promo 3', 'Fashion', '2021-12-12', '3 long description here');
 
-DROP TABLE IF EXISTS promotion_picture;
-CREATE TABLE promotion_picture
+CREATE TABLE promotion_pictures
 (
-    promotion_id INTEGER      NOT NULL REFERENCES promotion (id),
-    picture      VARCHAR(100) NOT NULL,
-    PRIMARY KEY (promotion_id, picture)
+    promotion_id INTEGER      NOT NULL REFERENCES promotions (id) ON DELETE CASCADE,
+    picture_path VARCHAR(100) NOT NULL,
+    PRIMARY KEY (promotion_id, picture_path)
 );
 
-INSERT INTO promotion_picture (promotion_id, picture)
+INSERT INTO promotion_pictures (promotion_id, picture_path)
 VALUES
        (1, 'promopic1.jpg'),
        (2, 'promopic2.jpg'),
        (3, 'promopic3.jpg');
+
+CREATE TABLE promotion_store
+(
+    promotion_id INTEGER NOT NULL REFERENCES promotions (id) ON DELETE CASCADE,
+    store_id     INTEGER NOT NULL REFERENCES stores (id) ON DELETE CASCADE,
+    PRIMARY KEY (promotion_id, store_id)
+);
+
+INSERT INTO promotion_store (promotion_id, store_id)
+VALUES
+    (1, 1),
+    (2, 2),
+    (3, 3);

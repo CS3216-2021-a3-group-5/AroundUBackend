@@ -1,14 +1,14 @@
 import {Store} from "../models/store"
 import {Promotion} from "../models/promotion"
-import { User } from "../models/user"
+import { Company } from "../models/company"
 
-export let testUsers = new Map<string, User>([
+export let testUsers = new Map<string, Company>([
   ["user1", {
-    userID: "user1",
+    name: "user1",
     email: "email",
     password: "asdasd",
     category: "cat1",
-    company_name: "angry company",
+    logo_path: "angry company",
     contact_no: "999"
   }]
 ])
@@ -19,7 +19,8 @@ export let testpromos = new Map<string, Promotion>([
     end_date: new Date("2019-01-16"),
     details: "aaa",
     storeIDs: ["1"],
-    userID: "user1"
+    userID: "user1",
+    category: "Fashion"
   }],
   ["promo2", {
     promoID: "promo2",
@@ -27,27 +28,26 @@ export let testpromos = new Map<string, Promotion>([
     end_date: new Date("2019-01-16"),
     details: "aaa",
     storeIDs: ["1"],
-    userID: "user1"
+    userID: "user1",
+    category: "Fashion"
   }]
 ])
 export let testStores = new Map<string,Store>([
   ["store1", {
     storeID: "store1",
     address: "ewe",
-    name: "a",
     location: { lat: 1.32, lon: 103.915 },
     opening_hours: "ssss",
    promotionIDs: ["promo1", "promo2"],
-   userID: "user1"    
+   company_name: "user1"
   } ], [
     "store2", {
       storeID: "store2",
       address: "ewe",
-      name: "a",
       location: { lat: 1.32, lon: 103.915 },
       opening_hours: "ssss",
      promotionIDs: ["promo1", "promo2"],
-     userID: "user1"
-    }    
+     company_name: "user1"
+    }
   ]
 ])

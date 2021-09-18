@@ -7,6 +7,7 @@ export interface Promotion {
   details: string;
   storeIDs: Array<string>
   userID: string
+  category: string
 }
 
 export function getListOfPromotionsOfUser(userid: string): Promotion[] {
