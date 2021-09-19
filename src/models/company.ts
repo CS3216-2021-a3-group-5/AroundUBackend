@@ -1,25 +1,26 @@
 import { textChangeRangeIsUnchanged } from "typescript"
 
 export interface Company {
-  logo_path: string,
-  password: string,
   email: string,
+  logo_path: string | null,
+  password: string,
   category: string,
-  contact_no: string,
-  name: string,
+  contact_no: number,
+  company_name: string,
 }
 
-export class UserInfo {
-  logo_path: string
+export class CompanyInfo {
   email: string
+  logo_path: string | null
   category: string
-  contact_no: string
+  contact_no: number
   company_name: string
   constructor(user: Company) {
     this.logo_path = user.logo_path
     this.email = user.email
     this.category = user.category
     this.contact_no = user.contact_no
-    this.company_name = user.name
+    this.company_name = user.company_name
   }
 }
+

@@ -4,49 +4,49 @@ import { Company } from "../models/company"
 
 export let testUsers = new Map<string, Company>([
   ["user1", {
-    name: "user1",
+    company_name: "user1",
     email: "email",
     password: "$2b$10$EgcNfNc4YJ5lzuAONIaG.uIXywIPq2vDfqFhiwrvlNXjq7qDd8Xwu",
     category: "cat1",
-    logo_path: "angry company",
-    contact_no: "999"
+    logo_path: "ngry company",
+    contact_no: 999
   }]
 ])
-export let testpromos = new Map<string, Promotion>([
-  ["promo1" , {
-    promoID: "promo1",
-    promoName: "psefr",
+export let testpromos = new Map<number, Promotion>([
+  [123123 , {
+    promotion_id: 23444,
+    promo_name: "psefr",
     end_date: new Date("2019-01-16"),
     details: "aaa",
-    storeIDs: ["1"],
-    userID: "user1",
+    storeIDs: [234,2342],
+    company_name: "user1",
     category: "Fashion"
   }],
-  ["promo2", {
-    promoID: "promo2",
-    promoName: "psefr",
+  [234, {
+    promotion_id: 23422,
+    promo_name: "psefr",
     end_date: new Date("2019-01-16"),
     details: "aaa",
-    storeIDs: ["1"],
-    userID: "user1",
+    storeIDs: [234,234],
+    company_name: "user1",
     category: "Fashion"
   }]
 ])
-export let testStores = new Map<string,Store>([
-  ["store1", {
-    storeID: "store1",
+export let testStores = new Map<number,Store>([
+  [234, {
+    store_id: 234,
     address: "ewe",
     location: { lat: 1.32, lon: 103.915 },
     opening_hours: "ssss",
-   promotionIDs: ["promo1", "promo2"],
+   promotionIDs: [234, 234],
    company_name: "user1"
   } ], [
-    "store2", {
-      storeID: "store2",
+    2324, {
+      store_id: 234,
       address: "ewe",
       location: { lat: 1.32, lon: 103.915 },
       opening_hours: "ssss",
-     promotionIDs: ["promo1", "promo2"],
+     promotionIDs: [234, 222],
      company_name: "user1"
     }
   ]

@@ -24,7 +24,7 @@ VALUES
 
 CREATE TABLE companies
 (
-    name           VARCHAR(100) UNIQUE NOT NULL,
+    company_name           VARCHAR(100) UNIQUE NOT NULL,
     email          VARCHAR(100) PRIMARY KEY,
     password       VARCHAR(100)        NOT NULL,
     logo_path      VARCHAR(100)        NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE companies
     category       VARCHAR(100)        NOT NULL REFERENCES categories (category)
 );
 
-INSERT INTO companies (name, email, password, logo_path, contact_number, category)
+INSERT INTO companies (company_name, email, password, logo_path, contact_number, category)
 VALUES
        ('Company 1', 'Company1@email.com', 'password1', 'Company1.jpg', 11111111, 'Electronics'),
        ('Company 2', 'Company12@email.com', 'password12', 'Company12.jpg', 11111111, 'Food'),
@@ -40,8 +40,8 @@ VALUES
 
 CREATE TABLE stores
 (
-    id            SERIAL PRIMARY KEY,
-    company_name  VARCHAR(100) NOT NULL REFERENCES companies (name) ON DELETE CASCADE,
+    store_id            SERIAL PRIMARY KEY,
+    company_name  VARCHAR(100) NOT NULL REFERENCES companies (company_name) ON DELETE CASCADE,
     longitude     NUMERIC      NOT NULL,
     latitude      NUMERIC      NOT NULL,
     address       VARCHAR(300) NOT NULL,
@@ -56,22 +56,23 @@ VALUES
 
 CREATE TABLE promotions
 (
-    id       SERIAL PRIMARY KEY,
-    name     VARCHAR(30)  NOT NULL,
+    promotion_id       SERIAL PRIMARY KEY,
+    promo_name     VARCHAR(30)  NOT NULL,
+    company_name VARCHAR(100) NOT NULL REFERENCES companies (company_name) ON DELETE CASCADE,
     category VARCHAR(100) NOT NULL REFERENCES categories (category),
     end_date DATE         NOT NULL,
     details  TEXT         NOT NULL
 );
 
-INSERT INTO promotions (name, category, end_date, details)
+INSERT INTO promotions (company_name, promo_name, category, end_date, details)
 VALUES
-       ('promo 1', 'Electronics', '2021-12-12', '1 long description here'),
-       ('promo 2', 'Food', '2021-12-12', '2 long description here'),
-       ('promo 3', 'Fashion', '2021-12-12', '3 long description here');
+       ('Company 1', 'promo 1', 'Electronics', '2021-12-12', '1 long description here'),
+       ('Company 2', 'promo 2', 'Food', '2021-12-12', '2 long description here'),
+       ('Company 3', 'promo 3', 'Fashion', '2021-12-12', '3 long description here');
 
 CREATE TABLE promotion_pictures
 (
-    promotion_id INTEGER      NOT NULL REFERENCES promotions (id) ON DELETE CASCADE,
+    promotion_id INTEGER      NOT NULL REFERENCES promotions (promotion_id) ON DELETE CASCADE,
     picture_path VARCHAR(100) NOT NULL,
     PRIMARY KEY (promotion_id, picture_path)
 );
@@ -84,8 +85,8 @@ VALUES
 
 CREATE TABLE promotion_store
 (
-    promotion_id INTEGER NOT NULL REFERENCES promotions (id) ON DELETE CASCADE,
-    store_id     INTEGER NOT NULL REFERENCES stores (id) ON DELETE CASCADE,
+    promotion_id INTEGER NOT NULL REFERENCES promotions (promotion_id) ON DELETE CASCADE,
+    store_id     INTEGER NOT NULL REFERENCES stores (store_id) ON DELETE CASCADE,
     PRIMARY KEY (promotion_id, store_id)
 );
 

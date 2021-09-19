@@ -1,4 +1,6 @@
 import {compare, genSalt, hash} from 'bcrypt'
+import { getCompanyByEmail } from '../database/companiesTable'
+import { Company } from '../models/company'
 import { testUsers } from '../testdata/testdata'
 
 export async function hashPassword(password: string): Promise<string> {
@@ -6,10 +8,3 @@ export async function hashPassword(password: string): Promise<string> {
   return await hash(password, salt)
 }
 
-export async function isCorrectPassword(userID: string, password: string): Promise<boolean> {
-  const user = testUsers.get(userID)
-  if (user == undefined) {
-    return false
-  }
-  return await compare(password, user.password)
-}
