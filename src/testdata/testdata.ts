@@ -6,7 +6,7 @@ export let testUsers = new Map<string, Company>([
   ["user1", {
     name: "user1",
     email: "email",
-    password: "asdasd",
+    password: "$2b$10$EgcNfNc4YJ5lzuAONIaG.uIXywIPq2vDfqFhiwrvlNXjq7qDd8Xwu",
     category: "cat1",
     logo_path: "angry company",
     contact_no: "999"
