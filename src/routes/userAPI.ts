@@ -24,7 +24,7 @@ export async function userLogin(req: Request, res: Response) {
 
 export async function registerUser(req: Request, res: Response) {
   const userID = req.body.userID
-  if (userID in testUsers) {
+  if (testUsers.has(userID)) {
     return res.send("User already exists")
   }
   const newUser: Company = {
