@@ -1,26 +1,24 @@
 import { createPromotion, getPromotionByCompany } from "../database/promotionsTable";
-import { testpromos } from "../testdata/testdata";
 import { createPromotionAtStore, getStoreIdByPromotionID } from "../database/promotionStoreTable";
 import {Company} from "./company";
+import {getRandomInt} from "./locationGenerator";
 export class Promotion {
-  promotion_id: number;
+  promotion_id: number | null;
   promo_name: string;
   end_date: Date;
   details: string;
   storeIDs: Array<number>
   company_name: string
-  category: string
 
-  static randomCount: number = 0;
+  static randomCount: number = 120;
   constructor(co: Company) {
-    Promotion.randomCount += 1;
-    this.promotion_id = 0
+    Promotion.randomCount = getRandomInt();
+    this.promotion_id = null
     this.promo_name = 'promo ' + Promotion.randomCount
     this.end_date = new Date('2021-12-12')
     this.details = 'promo details of promo ' + Promotion.randomCount
     this.storeIDs = []
     this.company_name = co.company_name
-    this.category = 'Fashion'
   }
 }
 

@@ -13,3 +13,7 @@ export function getRandomLocation(loc: LatLon): LatLon {
         lon: randomPoint.longitude
     }
 }
+
+export function getRandomInt() {
+    return Math.floor(Math.random() * (100000) + 100);
+}

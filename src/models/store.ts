@@ -4,19 +4,20 @@ import { createStore, getStoreByCompany } from "../database/storesTable";
 import { testpromos, testStores, testUsers } from "../testdata/testdata";
 import {Promotion} from "./promotion";
 import {Company} from "./company";
+import {getRandomInt} from "./locationGenerator";
 
 export class Store {
-  store_id: number;
+  store_id: number | null;
   address: string;
   location: LatLon;
   opening_hours: string;
   promotionIDs: Array<number>
   company_name: string
 
-  static randomCount: number = 0;
+  static randomCount: number = 100;
   constructor(location: LatLon, co: Company) {
-    Store.randomCount += 1;
-    this.store_id = 0
+    Store.randomCount = getRandomInt();
+    this.store_id = null
     this.address = 'Something Road, Something Mall, Singapore',
     this.location = location
     this.opening_hours = '8 am to 8 pm daily'
@@ -26,7 +27,7 @@ export class Store {
 }
 
 export class NearbyStoreData {
-  store_id: number;
+  store_id: number | null;
   address: string;
   location: LatLon;
   category_name: string | undefined;

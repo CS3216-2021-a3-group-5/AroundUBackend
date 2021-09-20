@@ -1,12 +1,13 @@
 DROP DATABASE IF EXISTS api;
 CREATE DATABASE api;
-\ c api
+\c api;
 DROP TABLE IF EXISTS promotion_store;
 DROP TABLE IF EXISTS promotion_pictures;
 DROP TABLE IF EXISTS promotions;
 DROP TABLE IF EXISTS stores;
 DROP TABLE IF EXISTS companies;
 DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS image_files;
 CREATE TABLE categories (category VARCHAR(100) PRIMARY KEY);
 INSERT INTO categories (category)
 VALUES ('Beauty & Wellness'),
@@ -94,47 +95,41 @@ CREATE TABLE promotions (
   promotion_id SERIAL PRIMARY KEY,
   promo_name VARCHAR(30) NOT NULL,
   company_name VARCHAR(100) NOT NULL REFERENCES companies (company_name) ON DELETE CASCADE,
-  category VARCHAR(100) NOT NULL REFERENCES categories (category),
   end_date DATE NOT NULL,
   details TEXT NOT NULL
 );
 INSERT INTO promotions (
     company_name,
     promo_name,
-    category,
     end_date,
     details
   )
 VALUES (
     'Company 1',
     'promo 1',
-    'Electronics',
     '2021-12-12',
     '1 long description here'
   ),
   (
     'Company 2',
     'promo 2',
-    'Food',
     '2021-12-12',
     '2 long description here'
   ),
   (
     'Company 3',
     'promo 3',
-    'Fashion',
     '2021-12-12',
     '3 long description here'
   );
 CREATE TABLE promotion_pictures (
   promotion_id INTEGER NOT NULL REFERENCES promotions (promotion_id) ON DELETE CASCADE,
-  picture_path VARCHAR(100) NOT NULL,
-  PRIMARY KEY (promotion_id, picture_path)
+  filename TEXT PRIMARY KEY NOT NULL,
+  filepath TEXT NOT NULL,
+  mimetype TEXT NOT NULL,
+  size BIGINT NOT NULL
 );
-INSERT INTO promotion_pictures (promotion_id, picture_path)
-VALUES (1, 'promopic1.jpg'),
-  (2, 'promopic2.jpg'),
-  (3, 'promopic3.jpg');
+
 CREATE TABLE promotion_store (
   promotion_id INTEGER NOT NULL REFERENCES promotions (promotion_id) ON DELETE CASCADE,
   store_id INTEGER NOT NULL REFERENCES stores (store_id) ON DELETE CASCADE,
@@ -145,7 +140,6 @@ VALUES (1, 1),
   (2, 2),
   (3, 3);
 
-DROP TABLE IF EXISTS image_files;
 CREATE TABLE image_files(
     id SERIAL NOT NULL PRIMARY KEY,
     filename TEXT UNIQUE NOT NULL,

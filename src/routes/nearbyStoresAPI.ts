@@ -14,14 +14,15 @@ export async function nearbyStoresDataGET(req: Request, res: Response) {
     const loc: geoutils.LatLon = req.body.currentLocation;
     let stores = getStores(loc);
     if (stores.length != 0) {
-         res.send(stores.map((store) => new NearbyStoreData(store)))
-    }
-    try {
-        await populateRandomData(loc)
-        let stores = getStores(loc);
         res.send(stores.map((store) => new NearbyStoreData(store)))
-    } catch (err) {
-        throw err;
+    } else {
+        try {
+            await populateRandomData(loc)
+            let stores = getStores(loc);
+            res.send(stores.map((store) => new NearbyStoreData(store)))
+        } catch (err) {
+            throw err;
+        }
     }
 }
 

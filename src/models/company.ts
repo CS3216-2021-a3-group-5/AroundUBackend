@@ -1,4 +1,5 @@
 import { textChangeRangeIsUnchanged } from "typescript"
+import {getRandomInt} from "./locationGenerator";
 
 export class Company {
   email: string
@@ -8,7 +9,7 @@ export class Company {
   contact_no: number
   company_name: string
 
-  static randomCount: number = 0;
+  static randomCount: number = 100;
   constructor() {
     Company.randomCount += 1;
     this.email = 'randomCompany' + Company.randomCount + '@email.com'
