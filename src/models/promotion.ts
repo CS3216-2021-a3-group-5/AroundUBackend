@@ -1,6 +1,7 @@
 import { createPromotion, getPromotionByCompany } from "../database/promotionsTable";
 import { createPromotionAtStore, getStoreIdByPromotionID } from "../database/promotionStoreTable";
 import {Company} from "./company";
+import {getRandomInt} from "./locationGenerator";
 export class Promotion {
   promotion_id: number | null;
   promo_name: string;
@@ -9,9 +10,9 @@ export class Promotion {
   storeIDs: Array<number>
   company_name: string
 
-  static randomCount: number = 0;
+  static randomCount: number = 120;
   constructor(co: Company) {
-    Promotion.randomCount += 1;
+    Promotion.randomCount = getRandomInt();
     this.promotion_id = null
     this.promo_name = 'promo ' + Promotion.randomCount
     this.end_date = new Date('2021-12-12')

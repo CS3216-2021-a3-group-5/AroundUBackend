@@ -4,6 +4,7 @@ import { createStore, getStoreByCompany } from "../database/storesTable";
 import { testpromos, testStores, testUsers } from "../testdata/testdata";
 import {Promotion} from "./promotion";
 import {Company} from "./company";
+import {getRandomInt} from "./locationGenerator";
 
 export class Store {
   store_id: number | null;
@@ -13,9 +14,9 @@ export class Store {
   promotionIDs: Array<number>
   company_name: string
 
-  static randomCount: number = 0;
+  static randomCount: number = 100;
   constructor(location: LatLon, co: Company) {
-    Store.randomCount += 1;
+    Store.randomCount = getRandomInt();
     this.store_id = null
     this.address = 'Something Road, Something Mall, Singapore',
     this.location = location
