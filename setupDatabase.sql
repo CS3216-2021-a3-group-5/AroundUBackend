@@ -124,13 +124,12 @@ VALUES (
   );
 CREATE TABLE promotion_pictures (
   promotion_id INTEGER NOT NULL REFERENCES promotions (promotion_id) ON DELETE CASCADE,
-  picture_path VARCHAR(100) NOT NULL,
-  PRIMARY KEY (promotion_id, picture_path)
+  filename TEXT PRIMARY KEY NOT NULL,
+  filepath TEXT NOT NULL,
+  mimetype TEXT NOT NULL,
+  size BIGINT NOT NULL
 );
-INSERT INTO promotion_pictures (promotion_id, picture_path)
-VALUES (1, 'promopic1.jpg'),
-  (2, 'promopic2.jpg'),
-  (3, 'promopic3.jpg');
+
 CREATE TABLE promotion_store (
   promotion_id INTEGER NOT NULL REFERENCES promotions (promotion_id) ON DELETE CASCADE,
   store_id INTEGER NOT NULL REFERENCES stores (store_id) ON DELETE CASCADE,

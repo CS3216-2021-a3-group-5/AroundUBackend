@@ -1,4 +1,4 @@
-GET http://localhost:3080/nearbystores 
+GET http://localhost:3080/nearbystores
 Content-Type: application/json
 
 {
@@ -19,7 +19,31 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:3080/uploadPromoPic/2
+Content-Type: multipart/form-data
+
+key: image
+type: file
+value: <any image of jpg or png>
+
+###
+POST http://localhost:3080/uploadLogo/company
+Content-Type: multipart/form-data
+
+key: image
+type: file
+value: <any image of jpg or png>
+
+###
+GET http://localhost:3080/getLogo
+Content-Type: application/json
+
+{
+  "filename": "company-logo"
+}
+
+###
 
 GET http://localhost:3080/userInfo
-Authorization: 
+Authorization:
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJoZWxsbyIsImVtYWlsIjoiaGVsbG8iLCJpYXQiOjE2MzE4MzAzNzN9.u2mC8y3pfuatrfCnQPTCGEXAittJ9mtMbZlBZiCSoyg
