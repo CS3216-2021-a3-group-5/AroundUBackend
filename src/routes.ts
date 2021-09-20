@@ -5,6 +5,7 @@ import { getUserInfo, registerUser, userLogin } from "./routes/userAPI";
 import { extractJWT } from "./middleware/extractJWT";
 import { createNewStore, getUserStore } from "./routes/manageStoresAPI";
 import { createNewPromotion, getUserPromotions } from "./routes/managePromotionsAPI";
+import {getImage, imageUpload, postImage} from "./image/imageAccess";
 const routes = express.Router();
 
 routes.use(json())
@@ -25,5 +26,7 @@ routes.post('/newStore', extractJWT, createNewStore)
 routes.post('/newPromotion', extractJWT, createNewPromotion)
 routes.get('/userPromotionInfo', extractJWT, getUserPromotions)
 routes.post('/registerUser', registerUser)
+routes.post('/image', imageUpload.single('image'), postImage);
+routes.get('/image', getImage);
 
 export default routes;
