@@ -18,23 +18,34 @@ const db = knex(
     }
 );
 
-// Create multer object
-export const imageUpload = multer({
-    dest: 'images',
+const storage = multer.diskStorage({
+    destination: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
+        cb(null, 'images')
+    },
+    filename: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
+        const company = req.params.company;
+        console.log(req.body);
+        console.log(req.params);
+        cb(null, company + '-logo')
+    }
 });
+
+// Create multer object
+export const imageUpload = multer({ storage: storage })
 
 export function postImage(req: Request, res: Response) {
     // @ts-ignore
-    const { originalname, mimetype, size } = req.file;
+    const { filename, mimetype, size } = req.file;
+    console.log(req.params);
     const filepath = req.file?.path;
     db.insert({
-        originalname,
+        filename,
         filepath,
         mimetype,
         size,
     })
         .into('image_files')
-        .then(() => res.json({ success: true, originalname }))
+        .then(() => res.json({ success: true, filename }))
         .catch((err: Error) => res.json({ success: false, message: 'upload failed', stack: err.stack }));
 }
 
@@ -44,10 +55,10 @@ export interface ImageFile {
 }
 
 export function getImage(req: Request, res: Response) {
-    const { originalname } = req.body;
+    const { filename } = req.body;
     db.select('*')
         .from('image_files')
-        .where({ originalname })
+        .where({ filename })
         .then((images: Array<ImageFile>) => {
             if (images[0]) {
                 const dirname = path.resolve();

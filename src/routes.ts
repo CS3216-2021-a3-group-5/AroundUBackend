@@ -26,7 +26,7 @@ routes.post('/newStore', extractJWT, createNewStore)
 routes.post('/newPromotion', extractJWT, createNewPromotion)
 routes.get('/userPromotionInfo', extractJWT, getUserPromotions)
 routes.post('/registerUser', registerUser)
-routes.post('/image', imageUpload.single('image'), postImage);
+routes.post('/uploadLogo/:company', imageUpload.single('image'), postImage);
 routes.get('/image', getImage);
 
 export default routes;

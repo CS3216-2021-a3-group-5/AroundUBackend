@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS promotions;
 DROP TABLE IF EXISTS stores;
 DROP TABLE IF EXISTS companies;
 DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS image_files;
 CREATE TABLE categories (category VARCHAR(100) PRIMARY KEY);
 INSERT INTO categories (category)
 VALUES ('Beauty & Wellness'),
@@ -140,10 +141,9 @@ VALUES (1, 1),
   (2, 2),
   (3, 3);
 
-DROP TABLE IF EXISTS image_files;
 CREATE TABLE image_files(
     id SERIAL NOT NULL PRIMARY KEY,
-    originalname TEXT UNIQUE NOT NULL,
+    filename TEXT UNIQUE NOT NULL,
     filepath TEXT NOT NULL,
     mimetype TEXT NOT NULL,
     size BIGINT NOT NULL
