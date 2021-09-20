@@ -18,7 +18,7 @@ function indexGET(req: express.Request, res: express.Response) {
 }
 
 routes.get('/', indexGET);
-routes.get('/nearbystores', nearbyStoresDataGET)
+routes.post('/nearbystores', nearbyStoresDataGET)
 routes.post('/login', userLogin)
 routes.get('/userInfo', extractJWT, getUserInfo)
 routes.get('/userStoreInfo', extractJWT, getUserStore)
