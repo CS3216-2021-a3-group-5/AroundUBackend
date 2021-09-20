@@ -1,12 +1,23 @@
 import { textChangeRangeIsUnchanged } from "typescript"
 
-export interface Company {
-  email: string,
-  logo_path: string | null,
-  password: string,
-  category: string,
-  contact_no: number,
-  company_name: string,
+export class Company {
+  email: string
+  logo_path: string | null
+  password: string
+  category: string
+  contact_no: number
+  company_name: string
+
+  static randomCount: number = 0;
+  constructor() {
+    Company.randomCount += 1;
+    this.email = 'randomCompany' + Company.randomCount + '@email.com'
+    this.logo_path = 'sample.jpg'
+    this.category = 'Fashion'
+    this.contact_no = 123456
+    this.password = 'password'
+    this.company_name = 'random company ' + Company.randomCount
+  }
 }
 
 export class CompanyInfo {

@@ -3,14 +3,26 @@ import { createPromotionAtStore, getPromotionIdByStoreID } from "../database/pro
 import { createStore, getStoreByCompany } from "../database/storesTable";
 import { testpromos, testStores, testUsers } from "../testdata/testdata";
 import {Promotion} from "./promotion";
+import {Company} from "./company";
 
-export interface Store {
+export class Store {
   store_id: number;
   address: string;
   location: LatLon;
   opening_hours: string;
   promotionIDs: Array<number>
   company_name: string
+
+  static randomCount: number = 0;
+  constructor(location: LatLon, co: Company) {
+    Store.randomCount += 1;
+    this.store_id = 0
+    this.address = 'Something Road, Something Mall, Singapore',
+    this.location = location
+    this.opening_hours = '8 am to 8 pm daily'
+    this.promotionIDs = []
+    this.company_name = co.company_name
+  }
 }
 
 export class NearbyStoreData {

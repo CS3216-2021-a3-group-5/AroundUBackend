@@ -1,7 +1,8 @@
 import { createPromotion, getPromotionByCompany } from "../database/promotionsTable";
 import { testpromos } from "../testdata/testdata";
 import { createPromotionAtStore, getStoreIdByPromotionID } from "../database/promotionStoreTable";
-export interface Promotion {
+import {Company} from "./company";
+export class Promotion {
   promotion_id: number;
   promo_name: string;
   end_date: Date;
@@ -9,6 +10,18 @@ export interface Promotion {
   storeIDs: Array<number>
   company_name: string
   category: string
+
+  static randomCount: number = 0;
+  constructor(co: Company) {
+    Promotion.randomCount += 1;
+    this.promotion_id = 0
+    this.promo_name = 'promo ' + Promotion.randomCount
+    this.end_date = new Date('2021-12-12')
+    this.details = 'promo details of promo ' + Promotion.randomCount
+    this.storeIDs = []
+    this.company_name = co.company_name
+    this.category = 'Fashion'
+  }
 }
 
 
