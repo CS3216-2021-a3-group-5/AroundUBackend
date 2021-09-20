@@ -12,6 +12,17 @@ export function getPromotionByCompany(company_name: string): Promise<QueryResult
     return pool.query('SELECT * FROM promotions WHERE company_name = $1', [company_name]);
 }
 
+export async function getPrmotionByID(id: number): Promise<Promotion> {
+    let row = (await pool.query('SELECT * FROM promotions WHERE promotion_id = $1', [id])).rows[0]
+    return {
+        promotion_id: row.promotion_id,
+        promo_name: row.promo_name,
+        end_date: row.end_data,
+        details: row.details,
+        storeIDs: [],
+        company_name: row.company_name
+    }
+}
 /*
 export function updatePromotion(promo: Promotion, handleResult: (error: Error, results: QueryResult) => void) {
     pool.query('UPDATE promotions SET name = $1, end_date = $2, details = $3 WHERE id = $4',

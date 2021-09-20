@@ -1,19 +1,30 @@
 import * as geoutils from "geolocation-utils";
 import { Request, Response } from "express";
 import {Promotion} from "../models/promotion";
-import {Store, NearbyStoreData} from "../models/store";
-import { testStores } from "../testdata/testdata";
-import {Company} from "../models/company";
-import {createCompany} from "../database/companiesTable";
-import {getRandomLocation} from "../models/locationGenerator";
-import {createStore} from "../database/storesTable";
-import {createPromotion} from "../database/promotionsTable";
-const range = 7000;
+import { NearbyStoreData} from "../models/store";
+
+import {getStores} from "../database/storesTable";
+import {getPrmotionByID} from "../database/promotionsTable";
+import { BADREQUEST, OK } from "../statuscodes/statusCode";
+import { getPromotionIdByStoreID } from "../database/promotionStoreTable";
+const range = 4000;
 
 export async function nearbyStoresDataGET(req: Request, res: Response) {
-    const loc: geoutils.LatLon = req.body.currentLocation;
-    let stores = getStores(loc);
-    if (stores.length != 0) {
+    try{
+        console.log(geoutils.distanceTo(req.body.currentLocation, {lon: 1, lat: 1}))
+        let stores = await getNearbyStores(req.body.currentLocation)
+        res.status(OK).json({
+            "stores": stores
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(BADREQUEST).json({
+            "error": err
+        })
+    }
+
+    //let stores = getStores(loc);
+   /* if (stores.length != 0) {
         res.send(stores.map((store) => new NearbyStoreData(store)))
     } else {
         try {
@@ -23,11 +34,11 @@ export async function nearbyStoresDataGET(req: Request, res: Response) {
         } catch (err) {
             throw err;
         }
-    }
+    }*/
 }
 
 // populates database with 1 copy of random company, store and promotion
-async function populateRandomData(loc: geoutils.LatLon) {
+/*async function populateRandomData(loc: geoutils.LatLon) {
     for (let i = 0; i < 3; i++) {
         try {
             const company = new Company();
@@ -42,11 +53,29 @@ async function populateRandomData(loc: geoutils.LatLon) {
         }
     }
 }
-
-function getStores(loc: geoutils.LatLon): Array<Store> {
-    return Array.from(testStores.values()).filter((store) => {
-        const dist = geoutils.distanceTo(loc, store.location);
-        console.log(dist);
-        return dist <= range
-    })
+*/
+async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStoreData[]> {
+    let filteredrow = (await getStores()).rows.filter((row) => geoutils.distanceTo(loc, {lon: row.longitude, lat: row.latitude}) < range)
+    let currentPromotionDictionary = new Map<number, Promotion>()
+    let storeData = await Promise.all(filteredrow.map(async (row) => {
+        let promos = await Promise.all((await getPromotionIdByStoreID(row.store_id)).rows.map(async (row) => {
+            let promo_id = row.promotion_id
+            if (!currentPromotionDictionary.has(promo_id)) {
+               let promotion = await getPrmotionByID(promo_id)
+               currentPromotionDictionary.set(promo_id, promotion)
+            }
+            return currentPromotionDictionary.get(promo_id) as Promotion
+        }))
+        let storeLocation = {lon: row.longitude, lat: row.latitude}
+        return {
+            store_id: row.store_id,
+            address: row.address,
+            location: storeLocation,
+            category_name: row.category_name,
+            opening_hours: row.opening_hours,
+            distanceFrom: geoutils.distanceTo(loc, storeLocation),
+            promotions: promos
+        }
+    }))
+    return storeData
 }

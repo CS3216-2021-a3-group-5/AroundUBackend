@@ -5,17 +5,18 @@ import { testpromos, testStores, testUsers } from "../testdata/testdata";
 import {Promotion} from "./promotion";
 import {Company} from "./company";
 import {getRandomInt} from "./locationGenerator";
+import { getPromotionByCompany } from "../database/promotionsTable";
 
-export class Store {
+export interface Store {
   store_id: number | null;
   address: string;
   location: LatLon;
   opening_hours: string;
-  promotionIDs: Array<number>
+  promotionIDs: number[]
   company_name: string
 
-  static randomCount: number = 100;
-  constructor(location: LatLon, co: Company) {
+  //static randomCount: number = 100;
+  /*constructor(location: LatLon, co: Company) {
     Store.randomCount = getRandomInt();
     this.store_id = null
     this.address = 'Something Road, Something Mall, Singapore',
@@ -23,18 +24,19 @@ export class Store {
     this.opening_hours = '8 am to 8 pm daily'
     this.promotionIDs = []
     this.company_name = co.company_name
-  }
+  }*/
 }
 
-export class NearbyStoreData {
+export interface NearbyStoreData {
   store_id: number | null;
   address: string;
   location: LatLon;
   category_name: string | undefined;
   opening_hours: string;
-  promotions: Array<Promotion>
+  distanceFrom: number;
+  promotions: Promotion[]
 
-  constructor(store: Store) {
+  /*constructor(store: Store) {
     this.store_id = store.store_id
     this.address = store.address
     this.location = store.location
@@ -42,28 +44,20 @@ export class NearbyStoreData {
     this.opening_hours = store.opening_hours
     this.promotions = store.promotionIDs.flatMap((id) => testpromos.get(id)).
     filter((item): item is Promotion => !!item)
-  }
+  }*/
+}
+
+export async function fillUpPromotionID(store: Store) {
+  store.promotionIDs = (await getPromotionIdByStoreID(store.store_id as number)).rows.map(row => row.promotion_id)
 }
 
 export async function getListOfStoresOfCompany(companyName: string): Promise<Store[]> {
-  const data = (await getStoreByCompany(companyName)).rows
-  const stores = data.map(async (row) => {
-    console.log(row)
-    let promoIDS = (await getPromotionIdByStoreID(row.store_id)).rows
-    console.log(promoIDS)
-    return {
-      store_id: row.store_id,
-      address: row.address,
-      location: {
-        lat: row.latitude,
-        lon: row.longitude
-      },
-      opening_hours: row.opening_hours,
-      promotionIDs: promoIDS.map(row => row.promotion_id),
-      company_name: row.company_name
-    }
-  })
-  return Promise.all(stores)
+  const stores = await getStoreByCompany(companyName)
+  
+  await Promise.all(stores.map(async store => {
+    await fillUpPromotionID(store)
+  }))
+  return stores
 }
 
 export async function saveNewStore(newStore: Store) {

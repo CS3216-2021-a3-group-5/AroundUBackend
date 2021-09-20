@@ -58,8 +58,8 @@ VALUES (
 CREATE TABLE stores (
   store_id SERIAL PRIMARY KEY,
   company_name VARCHAR(100) NOT NULL REFERENCES companies (company_name) ON DELETE CASCADE,
-  longitude NUMERIC NOT NULL,
-  latitude NUMERIC NOT NULL,
+  longitude DOUBLE PRECISION NOT NULL,
+  latitude DOUBLE PRECISION NOT NULL,
   address VARCHAR(300) NOT NULL,
   opening_hours VARCHAR(300) NOT NULL
 );

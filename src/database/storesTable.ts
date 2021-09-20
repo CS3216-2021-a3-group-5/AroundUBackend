@@ -18,15 +18,29 @@ export function getStoreById(id: number, handleResult: (error: Error, results: Q
     pool.query('SELECT * FROM stores WHERE id = $1', [id], handleResult);
 }
 
-export function getStoreByCompany(company_name: string): Promise<QueryResult> {
-    return pool.query('SELECT * FROM stores WHERE company_name = $1', [company_name]);
+export async function getStoreByCompany(company_name: string): Promise<Store[]> {
+    const data = await pool.query('SELECT * FROM stores WHERE company_name = $1', [company_name]);
+    return data.rows.map(row => {
+        return {
+            store_id: row.store_id,
+            address: row.address,
+            location: {
+                lat: row.latitude,
+                lon: row.longitude
+            },
+            opening_hours: row.opening_hours,
+            promotionIDs: [],
+            company_name: row.company_name
+    }})
 }
 
 // use to get all stores followed by filtering of results to get near locations
-export function getStores(handleResult: (error: Error, results: QueryResult) => void) {
-    pool.query('SELECT * FROM stores', handleResult);
+export function getStores(): Promise<QueryResult> {
+    return pool.query('SELECT * FROM stores JOIN companies ON stores.company_name = companies.company_name');
 }
 
 export function deleteStore(store: Store, handleResult: (error: Error, results: QueryResult) => void) {
     pool.query('DELETE FROM stores WHERE id = $1', [store.store_id], handleResult);
 }
+
+
