@@ -38,7 +38,7 @@ export async function userLogin(req: Request, res: Response) {
 export async function registerUser(req: Request, res: Response) {
   try {
     const newUser: Company = {
-      logo_path: req.body.company_name + '.png',
+      logo_path: req.body.email + '.png',
       password: await hashPassword(req.body.password),
       email: req.body.email,
       category: req.body.category,
