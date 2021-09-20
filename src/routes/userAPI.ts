@@ -15,7 +15,9 @@ export async function userLogin(req: Request, res: Response) {
   try {
     const companyInfo = await getCompanyByEmail(email)
     if (!await compare(password, companyInfo.password)) {
-      return res.status(FORBIDDEN).send("Wrong password")
+      return res.status(FORBIDDEN).json({
+        message: "Wrong password"
+      })
     }
     const user = {
       company_name: companyInfo.company_name
@@ -25,7 +27,10 @@ export async function userLogin(req: Request, res: Response) {
       accessToken: accessToken
     })
   } catch (error) {
-    return res.status(FORBIDDEN).send("Error logging in!")
+    console.log(error)
+    return res.status(FORBIDDEN).json({
+      message: "Error logging in!"
+    })
   }
 
 }
@@ -33,7 +38,7 @@ export async function userLogin(req: Request, res: Response) {
 export async function registerUser(req: Request, res: Response) {
   try {
     const newUser: Company = {
-      logo_path: req.body.logo_path,
+      logo_path: req.body.company_name + '.png',
       password: await hashPassword(req.body.password),
       email: req.body.email,
       category: req.body.category,
@@ -42,9 +47,13 @@ export async function registerUser(req: Request, res: Response) {
     }
     await createCompany(newUser)
   } catch (err) {
-    return res.status(BADREQUEST).send(err)
+    return res.status(BADREQUEST).json({
+      message: "Something bad happen in our server" // Need to handle err
+    })
   }
-  return res.status(OK).send("Success!")
+  return res.status(OK).json({
+    message: "Success!"
+  })
 
 }
 
@@ -53,7 +62,9 @@ export async function getUserInfo(req: Request, res: Response) {
 
     return res.status(OK).json(await getCompanyInfoByName(res.locals.jwt.company_name))
   } catch (err) {
-    return res.status(NOTFOUND).send(err)
+    return res.status(NOTFOUND).json({
+      message: "Fail to get user info."
+    })
   }
 }
 
