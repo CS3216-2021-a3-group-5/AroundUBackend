@@ -4,8 +4,8 @@ import { pool } from "./databaseSetUp";
 
 
 export function createPromotion(promo: Promotion): Promise<QueryResult> {
-    return pool.query('INSERT INTO promotions (promo_name, category, end_date, details, company_name) VALUES ($1, $2, $3, $4, $5) RETURNING promotion_id',
-        [promo.promo_name, promo.category, promo.end_date, promo.details, promo.company_name]);
+    return pool.query('INSERT INTO promotions (promo_name, end_date, details, company_name) VALUES ($1, $2, $3, $4) RETURNING promotion_id',
+        [promo.promo_name, promo.end_date, promo.details, promo.company_name]);
 }
 
 export function getPromotionByCompany(company_name: string): Promise<QueryResult> {
@@ -14,8 +14,8 @@ export function getPromotionByCompany(company_name: string): Promise<QueryResult
 
 /*
 export function updatePromotion(promo: Promotion, handleResult: (error: Error, results: QueryResult) => void) {
-    pool.query('UPDATE promotions SET name = $1, category = $2, end_date = $3, details = $4 WHERE id = $5',
-        [promo.promoName, promo.category, promo.end_date, promo.details, promo.promoID],
+    pool.query('UPDATE promotions SET name = $1, end_date = $2, details = $3 WHERE id = $4',
+        [promo.promoName, promo.end_date, promo.details, promo.promoID],
         handleResult);
 }
 

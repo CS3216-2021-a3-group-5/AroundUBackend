@@ -11,7 +11,6 @@ export async function createNewPromotion(req: Request, res: Response) {
             promo_name: req.body.promo_name,
             end_date: req.body.end_date,
             details: req.body.details,
-            category: req.body.category,
             storeIDs: req.body.store_ids
         })
         return res.status(OK).send("Creation success!")

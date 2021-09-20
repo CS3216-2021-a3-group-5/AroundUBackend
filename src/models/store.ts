@@ -6,7 +6,7 @@ import {Promotion} from "./promotion";
 import {Company} from "./company";
 
 export class Store {
-  store_id: number;
+  store_id: number | null;
   address: string;
   location: LatLon;
   opening_hours: string;
@@ -16,7 +16,7 @@ export class Store {
   static randomCount: number = 0;
   constructor(location: LatLon, co: Company) {
     Store.randomCount += 1;
-    this.store_id = 0
+    this.store_id = null
     this.address = 'Something Road, Something Mall, Singapore',
     this.location = location
     this.opening_hours = '8 am to 8 pm daily'
@@ -26,7 +26,7 @@ export class Store {
 }
 
 export class NearbyStoreData {
-  store_id: number;
+  store_id: number | null;
   address: string;
   location: LatLon;
   category_name: string | undefined;
