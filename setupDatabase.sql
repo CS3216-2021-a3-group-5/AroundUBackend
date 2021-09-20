@@ -1,6 +1,7 @@
 DROP DATABASE IF EXISTS api;
 CREATE DATABASE api;
-\ c api DROP TABLE IF EXISTS promotion_store;
+\ c api
+DROP TABLE IF EXISTS promotion_store;
 DROP TABLE IF EXISTS promotion_pictures;
 DROP TABLE IF EXISTS promotions;
 DROP TABLE IF EXISTS stores;
