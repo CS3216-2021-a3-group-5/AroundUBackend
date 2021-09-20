@@ -1,15 +1,39 @@
+import { createPromotion, getPromotionByCompany } from "../database/promotionsTable";
 import { testpromos } from "../testdata/testdata";
-
+import { createPromotionAtStore, getStoreIdByPromotionID } from "../database/promotionStoreTable";
 export interface Promotion {
-  promoID: string;
-  promoName: string;
+  promotion_id: number;
+  promo_name: string;
   end_date: Date;
   details: string;
-  storeIDs: Array<string>
-  userID: string
+  storeIDs: Array<number>
+  company_name: string
   category: string
 }
 
-export function getListOfPromotionsOfUser(userid: string): Promotion[] {
-  return Array.from(testpromos.values()).filter((promo) => (promo.userID == userid))
+
+export async function getListOfPromotionsOfCompany(companyName: string): Promise<Promotion[]> {
+  const data = (await getPromotionByCompany(companyName)).rows
+  const promotions = data.map(async (row) => {
+    console.log(row)
+    let store_ids = (await getStoreIdByPromotionID(row.promotion_id)).rows
+    console.log(store_ids)
+    return {
+      promotion_id: row.promotion_id,
+      promo_name: row.promo_name,
+      end_date: row.end_date,
+      details: row.details,
+      storeIDs: store_ids.map(row => row.store_id),
+      company_name: row.company_name,
+      category: row.category
+    }
+  })
+  return Promise.all(promotions)
+}
+
+export async function saveNewPromotion(newPromotion: Promotion) {
+  let newPromoID = (await createPromotion(newPromotion)).rows[0].promotion_id
+  await Promise.all(newPromotion.storeIDs.map(async (store_id) => {
+    await createPromotionAtStore(newPromoID, store_id)
+  }))
 }
