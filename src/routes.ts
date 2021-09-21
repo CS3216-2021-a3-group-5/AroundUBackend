@@ -3,10 +3,17 @@ import {json, urlencoded} from "body-parser";
 import { getNearbyStoreID, getSingleStore, getStoresFromID, nearbyStoreID, nearbyStoresDataGET } from "./routes/nearbyStoresAPI";
 import { getUserInfo, handlePreflight, registerUser, userLogin } from "./routes/userAPI";
 import { extractJWT } from "./middleware/extractJWT";
-import { createNewStore, deleteUserStore, getUserStore } from "./routes/manageStoresAPI";
-import { createNewPromotion, deleteUserPromotion, getUserPromotions } from "./routes/managePromotionsAPI";
+import { createNewStore, deleteUserStore, getUserStore, updateStore } from "./routes/manageStoresAPI";
+import {
+    createNewPromotion,
+    deleteUserPromotion,
+    getUserPromotions,
+    removePromoFromStore,
+    updatePromo
+} from "./routes/managePromotionsAPI";
 import {getLogo,getPromoPics, logoUpload, promoPicUpload, postLogo, postPromoPic} from "./image/imageAccess";
-import { deletePromotion } from "./database/promotionsTable";
+import {deletePromotion} from "./database/promotionsTable";
+import { deleteStore } from "./database/storesTable";
 const routes = express.Router();
 
 routes.use(json())
@@ -43,5 +50,11 @@ routes.get('/stores/:id', getSingleStore)
 routes.options('/stores/:id', handlePreflight);
 routes.delete('/promotion', deleteUserPromotion)
 routes.delete('/store', deleteUserStore)
+routes.post('/getStoresById', getStoresFromID)
+routes.post('/updatePromotion', extractJWT, updatePromo)
+routes.delete('/deletePromotion', extractJWT, deletePromotion)
+routes.post('/removePromoFromStore', extractJWT, removePromoFromStore)
+routes.post('/updateStore', extractJWT, updateStore)
+routes.delete('/deleteStore', extractJWT, deleteStore)
 
 export default routes;

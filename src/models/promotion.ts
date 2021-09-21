@@ -1,5 +1,6 @@
 import { createPromotion, getPromotionByCompany } from "../database/promotionsTable";
 import { createPromotionAtStore, getStoreIdByPromotionID } from "../database/promotionStoreTable";
+
 export interface Promotion {
   promotion_id: number | null;
   promo_name: string;
