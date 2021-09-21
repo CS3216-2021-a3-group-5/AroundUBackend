@@ -1,6 +1,6 @@
 import * as express from "express";
 import {json, urlencoded} from "body-parser";
-import { nearbyStoresDataGET } from "./routes/nearbyStoresAPI";
+import { getNearbyStoreID, getStoresFromID, nearbyStoresDataGET } from "./routes/nearbyStoresAPI";
 import { getUserInfo, registerUser, userLogin } from "./routes/userAPI";
 import { extractJWT } from "./middleware/extractJWT";
 import { createNewStore, getUserStore } from "./routes/manageStoresAPI";
@@ -30,6 +30,7 @@ routes.post('/uploadLogo/:company', logoUpload.single('image'), postLogo);
 routes.post('/uploadPromoPic/:promo_id', promoPicUpload.single('image'), postPromoPic);
 routes.get('/getLogo', getLogo);
 routes.get('/getPromoPic', getPromoPics);
-
+routes.post('/getnearbyStoreId', getNearbyStoreID)
+routes.post('getStoresById', getStoresFromID)
 
 export default routes;

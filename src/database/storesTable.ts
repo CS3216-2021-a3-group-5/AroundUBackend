@@ -14,8 +14,8 @@ export function updateStore(store: Store, handleResult: (error: Error, results: 
         handleResult);
 }
 
-export function getStoreById(id: number, handleResult: (error: Error, results: QueryResult) => void) {
-    pool.query('SELECT * FROM stores WHERE id = $1', [id], handleResult);
+export function getStoreById(id: number): Promise<QueryResult> {
+    return pool.query('SELECT * FROM stores JOIN companies ON stores.company_name = companies.company_name WHERE store_id = $1', [id]);
 }
 
 export async function getStoreByCompany(company_name: string): Promise<Store[]> {

@@ -2,7 +2,7 @@ import { createPromotion, getPromotionByCompany } from "../database/promotionsTa
 import { createPromotionAtStore, getStoreIdByPromotionID } from "../database/promotionStoreTable";
 import {Company} from "./company";
 import {getRandomInt} from "./locationGenerator";
-export class Promotion {
+export interface Promotion {
   promotion_id: number | null;
   promo_name: string;
   end_date: Date;
@@ -10,7 +10,7 @@ export class Promotion {
   storeIDs: Array<number>
   company_name: string
 
-  static randomCount: number = 120;
+  /*static randomCount: number = 120;
   constructor(co: Company) {
     Promotion.randomCount = getRandomInt();
     this.promotion_id = null
@@ -19,7 +19,7 @@ export class Promotion {
     this.details = 'promo details of promo ' + Promotion.randomCount
     this.storeIDs = []
     this.company_name = co.company_name
-  }
+  }*/
 }
 
 
