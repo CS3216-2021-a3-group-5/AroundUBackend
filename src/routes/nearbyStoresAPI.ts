@@ -10,17 +10,17 @@ import { getPromotionIdByStoreID } from "../database/promotionStoreTable";
 const range = 4000;
 
 export async function nearbyStoresDataGET(req: Request, res: Response) {
-
+    const body = JSON.parse(req.body)
     try{
-        console.log(geoutils.distanceTo(JSON.parse(req.body).currentLocation, {lon: 1, lat: 1}))
-        let stores = await getNearbyStores(JSON.parse(req.body).currentLocation)
+        console.log(geoutils.distanceTo(JSON.parse(body).currentLocation, {lon: 1, lat: 1}))
+        let stores = await getNearbyStores(JSON.parse(body).currentLocation)
         return res.status(OK).json({
-            "stores": stores
+            stores: stores
         })
     } catch (err) {
         console.log(err)
         return res.status(BADREQUEST).json({
-            "error": err
+            message: err
         })
     }
 
@@ -38,8 +38,9 @@ export async function nearbyStoresDataGET(req: Request, res: Response) {
     }*/
 }
 export async function nearbyStoreID(req: Request, res: Response) {
+    const body = JSON.parse(req.body)  
     try {
-        let ids = getNearbyStores(JSON.parse(req.body).currentLocation)
+        let ids = getNearbyStores(JSON.parse(body).currentLocation)
         return res.status(OK).json({
             "store_id" : ids
         })
@@ -50,15 +51,16 @@ export async function nearbyStoreID(req: Request, res: Response) {
     }
 }
 export async function getStoreByIds(req: Request, res: Response) {
+    const body = JSON.parse(req.body)  
     try {
-        let stores = getStoresFromID(req.body.store_ids)
+        let stores = getStoresFromID(body.store_ids)
         return res.status(OK).json({
-            "stores": stores
+            stores: stores
         })
     }
     catch (err) {
         return res.status(BADREQUEST).json({
-            "error": err
+            message: err
         })
     }
 }
@@ -127,8 +129,8 @@ export async function getStoresFromID(ids: number[]): Promise<NearbyStoreData[]>
         let promos = await Promise.all((await getPromotionIdByStoreID(store_id)).rows.map(async (row) => {
             let promo_id = row.promotion_id
             if (!currentPromotionDictionary.has(promo_id)) {
-               let promotion = await getPrmotionByID(promo_id)
-               currentPromotionDictionary.set(promo_id, promotion)
+              let promotion = await getPrmotionByID(promo_id)
+              currentPromotionDictionary.set(promo_id, promotion)
             }
             return currentPromotionDictionary.get(promo_id) as Promotion
         }))
