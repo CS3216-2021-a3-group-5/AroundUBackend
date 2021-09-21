@@ -4,8 +4,9 @@ import { getNearbyStoreID, getStoresFromID, nearbyStoresDataGET } from "./routes
 import { getUserInfo, registerUser, userLogin } from "./routes/userAPI";
 import { extractJWT } from "./middleware/extractJWT";
 import { createNewStore, getUserStore } from "./routes/manageStoresAPI";
-import { createNewPromotion, getUserPromotions } from "./routes/managePromotionsAPI";
+import { createNewPromotion, getUserPromotions, deletePromotion, removePromoFromStore } from "./routes/managePromotionsAPI";
 import {getLogo,getPromoPics, logoUpload, promoPicUpload, postLogo, postPromoPic} from "./image/imageAccess";
+import {updatePromotion} from "./database/promotionsTable";
 const routes = express.Router();
 
 routes.use(json())
@@ -31,6 +32,10 @@ routes.post('/uploadPromoPic/:promo_id', promoPicUpload.single('image'), postPro
 routes.get('/getLogo', getLogo);
 routes.get('/getPromoPic', getPromoPics);
 routes.post('/getnearbyStoreId', getNearbyStoreID)
-routes.post('getStoresById', getStoresFromID)
+routes.post('/getStoresById', getStoresFromID)
+
+routes.post('/updatePromotion', extractJWT, updatePromotion)
+routes.delete('/deletePromotion', extractJWT, deletePromotion)
+routes.post('/removePromoFromStore', extractJWT, removePromoFromStore)
 
 export default routes;
