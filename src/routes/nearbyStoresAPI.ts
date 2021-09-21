@@ -10,9 +10,10 @@ import { getPromotionIdByStoreID } from "../database/promotionStoreTable";
 const range = 4000;
 
 export async function nearbyStoresDataGET(req: Request, res: Response) {
+
     try{
-        console.log(geoutils.distanceTo(req.body.currentLocation, {lon: 1, lat: 1}))
-        let stores = await getNearbyStores(req.body.currentLocation)
+        console.log(geoutils.distanceTo(JSON.parse(req.body).currentLocation, {lon: 1, lat: 1}))
+        let stores = await getNearbyStores(JSON.parse(req.body).currentLocation)
         res.status(OK).json({
             "stores": stores
         })
@@ -55,7 +56,7 @@ export async function nearbyStoresDataGET(req: Request, res: Response) {
 }
 */
 async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStoreData[]> {
-    let filteredrow = (await getStores()).rows.filter((row) => geoutils.distanceTo(loc, {lon: row.longitude, lat: row.latitude}) < range)
+    let filteredrow = (await getStores()).rows.filter((row) => geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
     let currentPromotionDictionary = new Map<number, Promotion>()
     let storeData = await Promise.all(filteredrow.map(async (row) => {
         let promos = await Promise.all((await getPromotionIdByStoreID(row.store_id)).rows.map(async (row) => {
