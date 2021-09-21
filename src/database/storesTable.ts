@@ -1,6 +1,5 @@
-import {QueryResult, QueryResultRow} from "pg";
+import {QueryResult} from "pg";
 import { Store } from "../models/store"
-import {Company} from "../models/company";
 import { pool } from "./databaseSetUp";
 
 export function createStore(store: Store): Promise<QueryResult> {

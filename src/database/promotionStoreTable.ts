@@ -1,7 +1,6 @@
 import {QueryResult } from "pg";
 import { pool } from "./databaseSetUp";
 
-
 export function createPromotionAtStore(promotion_id: number, store_id: number): Promise<QueryResult> {
     return pool.query('INSERT INTO promotion_store (promotion_id, store_id) VALUES ($1, $2)',
         [promotion_id, store_id]);

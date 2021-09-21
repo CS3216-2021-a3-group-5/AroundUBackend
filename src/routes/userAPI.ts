@@ -1,7 +1,7 @@
-import {Request, Response, NextFunction} from "express"
+import {Request, Response} from "express"
 import { TOKEN_SECRET } from "../config/config";
 import * as jwt from "jsonwebtoken"
-import { Company, CompanyInfo } from "../models/company";
+import { Company } from "../models/company";
 import { hashPassword } from "../middleware/authethication";
 import { createCompany, getCompanyByEmail, getCompanyInfoByName } from "../database/companiesTable";
 import { compare } from "bcrypt";
