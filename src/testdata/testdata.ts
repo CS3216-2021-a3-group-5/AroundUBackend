@@ -8,7 +8,6 @@ export let testUsers = new Map<string, Company>([
     email: "email",
     password: "$2b$10$EgcNfNc4YJ5lzuAONIaG.uIXywIPq2vDfqFhiwrvlNXjq7qDd8Xwu",
     category: "cat1",
-    logo_path: "ngry company",
     contact_no: 999
   }]
 ])
