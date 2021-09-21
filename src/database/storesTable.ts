@@ -8,10 +8,9 @@ export function createStore(store: Store): Promise<QueryResult> {
         [store.company_name, store.location.lon, store.location.lat, store.address, store.opening_hours]);
 }
 
-export function updateStore(store: Store, handleResult: (error: Error, results: QueryResult) => void) {
-    pool.query('UPDATE stores SET company_name = $1, longitude = $2, latitude = $3, address = $4, opening_hours = $5 WHERE id = $6',
-        [store.company_name, store.location.lon, store.location.lat, store.address, store.opening_hours, store.store_id],
-        handleResult);
+export function updateStoreTable(store: Store): Promise<QueryResult> {
+    return pool.query('UPDATE stores SET company_name = $1, longitude = $2, latitude = $3, address = $4, opening_hours = $5 WHERE id = $6',
+        [store.company_name, store.location.lon, store.location.lat, store.address, store.opening_hours, store.store_id]);
 }
 
 export function getStoreById(id: number): Promise<QueryResult> {
@@ -39,8 +38,8 @@ export function getStores(): Promise<QueryResult> {
     return pool.query('SELECT * FROM stores JOIN companies ON stores.company_name = companies.company_name');
 }
 
-export function deleteStore(store: Store, handleResult: (error: Error, results: QueryResult) => void) {
-    pool.query('DELETE FROM stores WHERE id = $1', [store.store_id], handleResult);
+export function removeStore(store_id: number): Promise<QueryResult> {
+    return pool.query('DELETE FROM stores WHERE id = $1', [store_id]);
 }
 
 

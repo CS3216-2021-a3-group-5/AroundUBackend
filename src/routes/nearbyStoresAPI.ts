@@ -2,7 +2,6 @@ import * as geoutils from "geolocation-utils";
 import { Request, Response } from "express";
 import {Promotion} from "../models/promotion";
 import { NearbyStoreData} from "../models/store";
-
 import {getStoreById, getStores} from "../database/storesTable";
 import {getPrmotionByID} from "../database/promotionsTable";
 import { BADREQUEST, OK } from "../statuscodes/statusCode";
@@ -23,20 +22,8 @@ export async function nearbyStoresDataGET(req: Request, res: Response) {
             "error": err
         })
     }
-
-    //let stores = getStores(loc);
-   /* if (stores.length != 0) {
-        res.send(stores.map((store) => new NearbyStoreData(store)))
-    } else {
-        try {
-            await populateRandomData(loc)
-            let stores = getStores(loc);
-            res.send(stores.map((store) => new NearbyStoreData(store)))
-        } catch (err) {
-            throw err;
-        }
-    }*/
 }
+
 export async function nearbyStoreID(req: Request, res: Response) {
     try {
         let ids = getNearbyStores(JSON.parse(req.body).currentLocation)
@@ -62,23 +49,7 @@ export async function getStoreByIds(req: Request, res: Response) {
         })
     }
 }
-// populates database with 1 copy of random company, store and promotion
-/*async function populateRandomData(loc: geoutils.LatLon) {
-    for (let i = 0; i < 3; i++) {
-        try {
-            const company = new Company();
-            await createCompany(company);
-            const location = getRandomLocation(loc);
-            const store = new Store(location, company);
-            await createStore(store);
-            const promo = new Promotion(company);
-            await createPromotion(promo);
-        } catch (err) {
-            throw err;
-        }
-    }
-}
-*/
+
 async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStoreData[]> {
     let filteredrow = (await getStores()).rows.filter((row) => geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
     let currentPromotionDictionary = new Map<number, Promotion>()
@@ -112,12 +83,12 @@ export interface StoreIDWithRange {
 }
 export async function getNearbyStoreID (loc: geoutils.LatLon): Promise<StoreIDWithRange[]> {
     let filteredrow = (await getStores()).rows.filter((row) => geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
-    
+
     return filteredrow.map((row) => {return {
         store_id: row.store_id,
         distanceFrom: geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)})
     }})
-    
+
 }
 
 export async function getStoresFromID(ids: number[]): Promise<NearbyStoreData[]> {

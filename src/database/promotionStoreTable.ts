@@ -25,6 +25,14 @@ export function deletePromotionAtStore(promotion_id: number, store_id: number): 
     return pool.query('DELETE FROM promotion_store WHERE promotion_id = $1 AND store_id = $2', [promotion_id, store_id]);
 }
 
+export function deleteByPromotion(promotion_id: number): Promise<QueryResult> {
+    return pool.query('DELETE FROM promotion_store WHERE promotion_id = $1', [promotion_id]);
+}
+
+export function deleteByStore(store_id: number): Promise<QueryResult> {
+    return pool.query('DELETE FROM promotion_store WHERE store_id = $1', [store_id]);
+}
+
 export async function getPromotionIdByStoreID(store_id: number): Promise<QueryResult> {
     return pool.query('SELECT promotion_id FROM promotion_store WHERE store_id = $1', [store_id])
 }
