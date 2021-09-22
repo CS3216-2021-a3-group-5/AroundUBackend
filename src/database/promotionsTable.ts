@@ -18,7 +18,7 @@ export async function getPrmotionByID(id: number): Promise<Promotion | null> {
     return {
         promotion_id: row[0].promotion_id,
         promo_name: row[0].promo_name,
-        end_date: row[0].end_date,
+        end_date: row[0].end_data,
         details: row[0].details,
         storeIDs: [],
         company_name: row[0].company_name
