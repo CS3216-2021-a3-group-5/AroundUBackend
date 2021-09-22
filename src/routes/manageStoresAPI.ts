@@ -2,8 +2,13 @@ import { Response, Request } from "express"
 import { saveNewStore } from "../models/store"
 import { getListOfStoresOfCompany } from "../models/store"
 import { BADREQUEST, FORBIDDEN, OK } from "../statuscodes/statusCode"
+
 export async function createNewStore(req: Request, res: Response) {
-    const body = JSON.parse(req.body)  
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+
+    const body = JSON.parse(req.body) 
+
     try {
         await saveNewStore({
             store_id: body.store_id,
@@ -16,9 +21,13 @@ export async function createNewStore(req: Request, res: Response) {
             opening_hours: body.opening_hours,
             promotionIDs: body.promotion_ids
         })
-        return res.status(OK).send("Creation success!")
+        return res.status(OK).json({
+          message: "Creation successful!"
+        })
     } catch (err) {
-        return res.status(BADREQUEST).send(err)
+        return res.status(BADREQUEST).json({
+          message: "Cannot add new store.",
+        })
     }
 }
 

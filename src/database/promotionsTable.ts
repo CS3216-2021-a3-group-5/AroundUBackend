@@ -4,6 +4,7 @@ import { pool } from "./databaseSetUp";
 
 
 export function createPromotion(promo: Promotion): Promise<QueryResult> {
+    console.log(promo)
     return pool.query('INSERT INTO promotions (promo_name, end_date, details, company_name) VALUES ($1, $2, $3, $4) RETURNING promotion_id',
         [promo.promo_name, promo.end_date, promo.details, promo.company_name]);
 }
