@@ -3,9 +3,10 @@ import {json, urlencoded} from "body-parser";
 import { getNearbyStoreID, getStoresFromID, nearbyStoreID, nearbyStoresDataGET } from "./routes/nearbyStoresAPI";
 import { getUserInfo, handlePreflight, registerUser, userLogin } from "./routes/userAPI";
 import { extractJWT } from "./middleware/extractJWT";
-import { createNewStore, getUserStore } from "./routes/manageStoresAPI";
-import { createNewPromotion, getUserPromotions } from "./routes/managePromotionsAPI";
+import { createNewStore, deleteUserStore, getUserStore } from "./routes/manageStoresAPI";
+import { createNewPromotion, deleteUserPromotion, getUserPromotions } from "./routes/managePromotionsAPI";
 import {getLogo,getPromoPics, logoUpload, promoPicUpload, postLogo, postPromoPic} from "./image/imageAccess";
+import { deletePromotion } from "./database/promotionsTable";
 const routes = express.Router();
 
 routes.use(json())
@@ -35,5 +36,6 @@ routes.get('/logo', getLogo);
 routes.get('/promoPic', getPromoPics);
 routes.post('/nearbyStoreId', nearbyStoreID)
 routes.post('/storesById', getStoresFromID)
-
+routes.delete('/promotion', deleteUserPromotion)
+routes.delete('/store', deleteUserStore)
 export default routes;

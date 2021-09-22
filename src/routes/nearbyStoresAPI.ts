@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import {Promotion} from "../models/promotion";
 import { NearbyStoreData} from "../models/store";
 
-import {getStoreById, getStores} from "../database/storesTable";
+import {getStoreByIdWithCompany, getStores} from "../database/storesTable";
 import {getPrmotionByID} from "../database/promotionsTable";
 import { BADREQUEST, OK } from "../statuscodes/statusCode";
 import { getNumberOfPromotionOfStore, getPromotionIdByStoreID } from "../database/promotionStoreTable";
@@ -92,14 +92,16 @@ export async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStore
     let storeData = await Promise.all(filteredrow.map(async (row) => {
         let promosId = (await getPromotionIdByStoreID(row.store_id)).rows
         //console.log(promosId)
-        let promos = await Promise.all(promosId.map(async (row) => {
+        let promos = (await Promise.all(promosId.map(async (row) => {
             let promo_id = row.promotion_id
             if (!currentPromotionDictionary.has(promo_id)) {
                let promotion = await getPrmotionByID(promo_id)
-               currentPromotionDictionary.set(promo_id, promotion)
+               if (promotion != null) {
+                currentPromotionDictionary.set(promo_id, promotion) 
+              }
             }
-            return currentPromotionDictionary.get(promo_id) as Promotion
-        }))
+            return currentPromotionDictionary.get(promo_id)
+        }))).filter((x): x is Promotion => x !== null)
         if (promos.length == 0) {
             return null
         }
@@ -138,15 +140,17 @@ export async function getNearbyStoreID (loc: geoutils.LatLon): Promise<StoreIDWi
 export async function getStoresFromID(ids: number[]): Promise<NearbyStoreData[]> {
     let currentPromotionDictionary = new Map<number, Promotion>()
     let data = await Promise.all(ids.map( async (store_id) => {
-        let store = (await getStoreById(store_id)).rows[0];
-        let promos = await Promise.all((await getPromotionIdByStoreID(store_id)).rows.map(async (row) => {
+        let store = (await getStoreByIdWithCompany(store_id)).rows[0];
+        let promos = (await Promise.all((await getPromotionIdByStoreID(store_id)).rows.map(async (row) => {
             let promo_id = row.promotion_id
             if (!currentPromotionDictionary.has(promo_id)) {
               let promotion = await getPrmotionByID(promo_id)
-              currentPromotionDictionary.set(promo_id, promotion)
+              if (promotion != null) {
+                currentPromotionDictionary.set(promo_id, promotion) 
+              }
             }
-            return currentPromotionDictionary.get(promo_id) as Promotion
-        }))
+            return currentPromotionDictionary.get(promo_id)
+        }))).filter((x): x is Promotion => x !== null)
         let storeLocation = {lon: store.longitude, lat: store.latitude}
         return {
             store_id: store_id,

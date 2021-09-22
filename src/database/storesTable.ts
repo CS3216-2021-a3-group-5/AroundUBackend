@@ -1,4 +1,4 @@
-import {QueryResult, QueryResultRow} from "pg";
+import {Query, QueryResult, QueryResultRow} from "pg";
 import { Store } from "../models/store"
 import {Company} from "../models/company";
 import { pool } from "./databaseSetUp";
@@ -14,8 +14,24 @@ export function updateStore(store: Store, handleResult: (error: Error, results: 
         handleResult);
 }
 
-export function getStoreById(id: number): Promise<QueryResult> {
+export function getStoreByIdWithCompany(id: number): Promise<QueryResult> {
     return pool.query('SELECT * FROM stores JOIN companies ON stores.company_name = companies.company_name WHERE store_id = $1', [id]);
+}
+
+export async function getStoreById(id: number): Promise<Store | null> {
+    let data = (await pool.query('SELECT * FROM stores JOIN companies ON stores.company_name = companies.company_name WHERE store_id = $1', [id])).rows;
+    if (data.length == 0) {
+        return null;
+    }
+    return {
+        store_id: data[0].store_id,
+        address: data[0].address,
+        location: {lat: data[0].latitude, lon: data[0].longitude},
+        opening_hours: data[0].opening_hours,
+        promotionIDs: [],
+        company_name: data[0].company_name
+      
+    }
 }
 
 export async function getStoreByCompany(company_name: string): Promise<Store[]> {
@@ -39,8 +55,8 @@ export function getStores(): Promise<QueryResult> {
     return pool.query('SELECT * FROM stores JOIN companies ON stores.company_name = companies.company_name');
 }
 
-export function deleteStore(store: Store, handleResult: (error: Error, results: QueryResult) => void) {
-    pool.query('DELETE FROM stores WHERE id = $1', [store.store_id], handleResult);
+export function deleteStore(store: Store): Promise<QueryResult> {
+    return pool.query('DELETE FROM stores WHERE id = $1', [store.store_id]);
 }
 
 

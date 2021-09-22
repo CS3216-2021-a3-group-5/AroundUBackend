@@ -12,15 +12,16 @@ export function getPromotionByCompany(company_name: string): Promise<QueryResult
     return pool.query('SELECT * FROM promotions WHERE company_name = $1', [company_name]);
 }
 
-export async function getPrmotionByID(id: number): Promise<Promotion> {
-    let row = (await pool.query('SELECT * FROM promotions WHERE promotion_id = $1', [id])).rows[0]
+export async function getPrmotionByID(id: number): Promise<Promotion | null> {
+    let row = (await pool.query('SELECT * FROM promotions WHERE promotion_id = $1', [id])).rows
+    if (row.length ==0) return null
     return {
-        promotion_id: row.promotion_id,
-        promo_name: row.promo_name,
-        end_date: row.end_data,
-        details: row.details,
+        promotion_id: row[0].promotion_id,
+        promo_name: row[0].promo_name,
+        end_date: row[0].end_data,
+        details: row[0].details,
         storeIDs: [],
-        company_name: row.company_name
+        company_name: row[0].company_name
     }
 }
 /*
@@ -33,8 +34,8 @@ export function updatePromotion(promo: Promotion, handleResult: (error: Error, r
 export function getPromotionById(id: number, handleResult: (error: Error, results: QueryResult) => void) {
     pool.query('SELECT * FROM promotions WHERE id = $1', [id], handleResult);
 }
-
-export function deletePromotion(promo: Promotion, handleResult: (error: Error, results: QueryResult) => void) {
-    pool.query('DELETE FROM promotions WHERE id = $1', [promo.promoID], handleResult);
-}
 */
+export function deletePromotion(promo_id: number): Promise<QueryResult> {
+    return pool.query('DELETE FROM promotions WHERE id = $1', [promo_id]);
+}
+
