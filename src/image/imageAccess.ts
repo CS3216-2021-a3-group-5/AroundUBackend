@@ -60,7 +60,7 @@ export interface ImageFile {
 }
 
 export function getLogo(req: Request, res: Response) {
-    const filename = req.body.filename;
+    const filename = req.params.company;
     console.log(filename);
     pool.query('SELECT * FROM company_logos WHERE filename = $1', [filename], (error: Error, results: QueryResult) => {
         if (error) {
@@ -77,7 +77,7 @@ export function getLogo(req: Request, res: Response) {
  }
 
 export function getPromoPics(req: Request, res: Response) {
-    const promotion_id = req.body.promotion_id;
+    const promotion_id = req.params.promo_id;
     console.log(promotion_id);
     pool.query('SELECT * FROM promotion_pictures WHERE promotion_id = $1', [promotion_id], (error: Error, results: QueryResult) => {
         if (error) {

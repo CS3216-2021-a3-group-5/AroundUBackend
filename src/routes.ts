@@ -78,9 +78,9 @@ routes.delete('/promotion', deleteUserPromotion);
 routes.delete('/promotion/fromStore', extractJWT, removePromoFromStore);
 
 // Image APIs
-routes.get('/image/logo', getLogo);
-routes.post('/image/logo/:company', logoUpload.single('image'), postLogo);
-routes.get('/image/promotionPicture', getPromoPics);
-routes.post('/image/promotionPicture/:promo_id', promoPicUpload.single('image'), postPromoPic);
+routes.get('/image/logo/:company', extractJWT, getLogo);
+routes.post('/image/logo/:company', extractJWT, logoUpload.single('image'), postLogo);
+routes.get('/image/promotionPicture/:promo_id', extractJWT, getPromoPics);
+routes.post('/image/promotionPicture/:promo_id', extractJWT, promoPicUpload.single('image'), postPromoPic);
 
 export default routes;
