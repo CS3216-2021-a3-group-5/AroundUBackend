@@ -93,18 +93,22 @@ async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStoreData[]>
             }
             return currentPromotionDictionary.get(promo_id) as Promotion
         }))
+        if (promos.length == 0) {
+            return null
+        }
         let storeLocation = {lon: row.longitude, lat: row.latitude}
         return {
             store_id: row.store_id,
             address: row.address,
             location: storeLocation,
-            category_name: row.category_name,
+            category_name: row.category,
+            company_name: row.company_name,
             opening_hours: row.opening_hours,
             distanceFrom: geoutils.distanceTo(loc, storeLocation),
             promotions: promos
         }
     }))
-    return storeData
+    return storeData.filter((x): x is NearbyStoreData => x !== null)
 }
 
 
@@ -139,8 +143,9 @@ export async function getStoresFromID(ids: number[]): Promise<NearbyStoreData[]>
             store_id: store_id,
             address: store.address,
             location: storeLocation,
-            category_name: store.category_name,
+            category_name: store.category,
             opening_hours: store.opening_hours,
+            company_name: store.company_name,
             distanceFrom: 0,
             promotions: promos
         }

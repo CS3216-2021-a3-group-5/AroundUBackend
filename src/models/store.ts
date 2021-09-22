@@ -34,6 +34,7 @@ export interface NearbyStoreData {
   category_name: string | undefined;
   opening_hours: string;
   distanceFrom: number;
+  company_name: string | undefined;
   promotions: Promotion[]
 
   /*constructor(store: Store) {
