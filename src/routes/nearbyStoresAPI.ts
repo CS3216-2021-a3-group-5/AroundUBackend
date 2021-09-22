@@ -5,7 +5,7 @@ import { NearbyStoreData} from "../models/store";
 
 import {getStoreByIdWithCompany, getStores} from "../database/storesTable";
 import {getPrmotionByID} from "../database/promotionsTable";
-import { BADREQUEST, OK } from "../statuscodes/statusCode";
+import { BADREQUEST, OK, NOTFOUND } from "../statuscodes/statusCode";
 import { getNumberOfPromotionOfStore, getPromotionIdByStoreID } from "../database/promotionStoreTable";
 const range = 4000;
 
@@ -56,9 +56,28 @@ export async function nearbyStoreID(req: Request, res: Response) {
 export async function getStoreByIds(req: Request, res: Response) {
     const body = JSON.parse(req.body)  
     try {
-        let stores = getStoresFromID(body.store_ids)
+        let stores = await getStoresFromID(body.store_ids)
         return res.status(OK).json({
             stores: stores
+        })
+    }
+    catch (err) {
+        return res.status(BADREQUEST).json({
+            message: err
+        })
+    }
+}
+
+export async function getSingleStore(req: Request, res: Response) { 
+    try {
+        let stores = await getStoresFromID([parseInt(req.params.id)])
+        if (stores.length ==0) {
+            return res.status(NOTFOUND).json({
+                error: "NO SUCH STORE!"
+            })
+        }
+        return res.status(OK).json({
+            stores: stores[0]
         })
     }
     catch (err) {

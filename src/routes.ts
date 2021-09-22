@@ -1,6 +1,6 @@
 import * as express from "express";
 import {json, urlencoded} from "body-parser";
-import { getNearbyStoreID, getStoresFromID, nearbyStoreID, nearbyStoresDataGET } from "./routes/nearbyStoresAPI";
+import { getNearbyStoreID, getSingleStore, getStoresFromID, nearbyStoreID, nearbyStoresDataGET } from "./routes/nearbyStoresAPI";
 import { getUserInfo, handlePreflight, registerUser, userLogin } from "./routes/userAPI";
 import { extractJWT } from "./middleware/extractJWT";
 import { createNewStore, deleteUserStore, getUserStore } from "./routes/manageStoresAPI";
@@ -36,6 +36,8 @@ routes.get('/logo', getLogo);
 routes.get('/promoPic', getPromoPics);
 routes.post('/nearbyStoreId', nearbyStoreID)
 routes.post('/storesById', getStoresFromID)
+routes.get('/stores/:id', getSingleStore)
+  
 routes.delete('/promotion', deleteUserPromotion)
 routes.delete('/store', deleteUserStore)
 export default routes;
