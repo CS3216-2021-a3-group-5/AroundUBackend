@@ -31,9 +31,9 @@ routes.post('/registerUser', registerUser)
 routes.options('/registerUser', handlePreflight);
 routes.post('/uploadLogo/:company', logoUpload.single('image'), postLogo);
 routes.post('/uploadPromoPic/:promo_id', promoPicUpload.single('image'), postPromoPic);
-routes.get('/getLogo', getLogo);
-routes.get('/getPromoPic', getPromoPics);
-routes.post('/getnearbyStoreId', nearbyStoreID)
-routes.post('getStoresById', getStoresFromID)
+routes.get('/logo', getLogo);
+routes.get('/promoPic', getPromoPics);
+routes.post('/nearbyStoreId', nearbyStoreID)
+routes.post('/storesById', getStoresFromID)
 
 export default routes;

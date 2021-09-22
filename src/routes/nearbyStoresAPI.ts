@@ -6,7 +6,7 @@ import { NearbyStoreData} from "../models/store";
 import {getStoreById, getStores} from "../database/storesTable";
 import {getPrmotionByID} from "../database/promotionsTable";
 import { BADREQUEST, OK } from "../statuscodes/statusCode";
-import { getPromotionIdByStoreID } from "../database/promotionStoreTable";
+import { getNumberOfPromotionOfStore, getPromotionIdByStoreID } from "../database/promotionStoreTable";
 const range = 4000;
 
 export async function nearbyStoresDataGET(req: Request, res: Response) {
@@ -38,10 +38,12 @@ export async function nearbyStoresDataGET(req: Request, res: Response) {
     }*/
 }
 export async function nearbyStoreID(req: Request, res: Response) {
-    const body = JSON.parse(req.body)  
+    //const body = JSON.parse(req.body)  
+    //let currentLocation = req.body.currentLocation
+    let currentLocation = JSON.parse(req.body).currentLocation
     console.log(req.body.currentLOcation)
     try {
-        let ids = await getNearbyStoreID(JSON.parse(body).currentLocation)
+        let ids = await getNearbyStoreID(currentLocation)
         return res.status(OK).json({
             "store_id" : ids
         })
@@ -123,10 +125,13 @@ export interface StoreIDWithRange {
 }
 export async function getNearbyStoreID (loc: geoutils.LatLon): Promise<StoreIDWithRange[]> {
     let filteredrow = (await getStores()).rows.filter((row) => geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
-    return filteredrow.map((row) => {return {
+    return (await Promise.all(filteredrow.map(async (row) => {
+        let count = await(getNumberOfPromotionOfStore(row.store_id))
+        if (count == 0) return null;
+        return {
         store_id: row.store_id,
         distanceFrom: geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)})
-    }})
+    }}))).filter((x): x is StoreIDWithRange => x !== null)
     
 }
 

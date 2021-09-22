@@ -34,3 +34,8 @@ export async function getPromotionIdByStoreID(store_id: number): Promise<QueryRe
 export async function getStoreIdByPromotionID(promotion_id: number): Promise<QueryResult> {
     return pool.query('SELECT store_id FROM promotion_store WHERE promotion_id = $1', [promotion_id])
 }
+
+export async function getNumberOfPromotionOfStore(store_id: number): Promise<number> {
+    let data = await pool.query('SELECT COUNT(*) FROM promotion_store WHERE store_id = $1', [store_id])
+    return data.rows[0].count
+}
