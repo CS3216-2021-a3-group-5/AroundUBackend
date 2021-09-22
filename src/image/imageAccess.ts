@@ -77,7 +77,7 @@ export interface ImageFile {
 }
 
 export function getLogo(req: Request, res: Response) {
-    const { filename } = req.body;
+    const { filename } = JSON.parse(req.body);
     db.select('*')
         .from('image_files')
         .where({ filename })
@@ -94,7 +94,7 @@ export function getLogo(req: Request, res: Response) {
 }
 
 export function getPromoPics(req: Request, res: Response) {
-    const { promotion_id } = req.body;
+    const { promotion_id } = JSON.parse(req.body);
     db.select('*')
         .from('promotion_pictures')
         .where({ promotion_id })
