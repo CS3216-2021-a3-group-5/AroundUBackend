@@ -1,11 +1,12 @@
 import { Response, Request } from "express"
-import { json } from "stream/consumers"
-import { deleteStore, getStoreById} from "../database/storesTable"
+import { deleteStore, getStoreById, updateStoreTable} from "../database/storesTable"
 import { saveNewStore } from "../models/store"
 import { getListOfStoresOfCompany } from "../models/store"
 import { BADREQUEST, FORBIDDEN, OK } from "../statuscodes/statusCode"
+import {createPromotionAtStore, deleteByStore} from "../database/promotionStoreTable";
+
 export async function createNewStore(req: Request, res: Response) {
-    const body = JSON.parse(req.body)  
+    const body = JSON.parse(req.body)
     try {
         await saveNewStore({
             store_id: body.store_id,
@@ -26,11 +27,11 @@ export async function createNewStore(req: Request, res: Response) {
 
 export async function getUserStore(req: Request, res: Response) {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", 
+    res.setHeader("Access-Control-Allow-Headers",
     "Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     try {
       let stores = await getListOfStoresOfCompany(res.locals.jwt.company_name)
-        
+
       return res.status(OK).json({
           stores: stores
       })
@@ -41,7 +42,7 @@ export async function getUserStore(req: Request, res: Response) {
 
 export async function deleteUserStore(req: Request, res: Response) {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", 
+    res.setHeader("Access-Control-Allow-Headers",
     "Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     let body = JSON.parse(req.body)
     let store_id = body.store_id
@@ -51,7 +52,7 @@ export async function deleteUserStore(req: Request, res: Response) {
             return res.status(FORBIDDEN).json({
                 message: "This is not your store!"
             })
-        }        
+        }
         await deleteStore(store_id)
         return res.status(OK).json({
             message: "deletion success!"
@@ -62,3 +63,26 @@ export async function deleteUserStore(req: Request, res: Response) {
         })
     }
 }
+
+
+export async function updateStore(req: Request, res: Response) {
+    try {
+        const store = {
+            store_id: req.body.store_id,
+            address: req.body.address,
+            location: req.body.location,
+            opening_hours: req.body.opening_hours,
+            promotionIDs: req.body.promotionIDs,
+            company_name: res.locals.jwt.company_name
+        };
+        await updateStoreTable(store);
+        await deleteByStore(store.store_id);
+        await Promise.all(store.promotionIDs.map(async (id: number) => {
+            await createPromotionAtStore(id, store.store_id)
+        }))
+        return res.status(OK).send();
+    } catch (err) {
+        return res.status(BADREQUEST).send(err)
+    }
+}
+

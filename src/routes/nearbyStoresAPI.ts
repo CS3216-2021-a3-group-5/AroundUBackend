@@ -24,24 +24,11 @@ export async function nearbyStoresDataGET(req: Request, res: Response) {
             message: err
         })
     }
-
-    //let stores = getStores(loc);
-   /* if (stores.length != 0) {
-        res.send(stores.map((store) => new NearbyStoreData(store)))
-    } else {
-        try {
-            await populateRandomData(loc)
-            let stores = getStores(loc);
-            res.send(stores.map((store) => new NearbyStoreData(store)))
-        } catch (err) {
-            throw err;
-        }
-    }*/
 }
 export async function nearbyStoreID(req: Request, res: Response) {
     res.setHeader("Access-Control-Allow-Origin", "*");
 
-    //const body = JSON.parse(req.body)  
+    //const body = JSON.parse(req.body)
     //let currentLocation = req.body.currentLocation\
     try {
     let currentLocation = {lat: parseFloat(req.query.lat as string), lon: parseFloat(req.query.lon as string)}
@@ -60,7 +47,7 @@ export async function nearbyStoreID(req: Request, res: Response) {
 export async function getStoreByIds(req: Request, res: Response) {
     res.setHeader("Access-Control-Allow-Origin", "*");
 
-    const body = JSON.parse(req.body)  
+    const body = JSON.parse(req.body)
     try {
         let stores = await getStoresFromID(body.store_ids)
         return res.status(OK).json({
@@ -74,7 +61,7 @@ export async function getStoreByIds(req: Request, res: Response) {
     }
 }
 
-export async function getSingleStore(req: Request, res: Response) { 
+export async function getSingleStore(req: Request, res: Response) {
     res.setHeader("Access-Control-Allow-Origin", "*");
 
     try {
@@ -94,27 +81,11 @@ export async function getSingleStore(req: Request, res: Response) {
         })
     }
 }
-// populates database with 1 copy of random company, store and promotion
-/*async function populateRandomData(loc: geoutils.LatLon) {
-    for (let i = 0; i < 3; i++) {
-        try {
-            const company = new Company();
-            await createCompany(company);
-            const location = getRandomLocation(loc);
-            const store = new Store(location, company);
-            await createStore(store);
-            const promo = new Promotion(company);
-            await createPromotion(promo);
-        } catch (err) {
-            throw err;
-        }
-    }
-}
-*/
+
 export async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStoreData[]> {
-    let filteredrow = (await getStores()).rows.filter((row) => 
+    let filteredrow = (await getStores()).rows.filter((row) =>
     geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
-    
+
     let currentPromotionDictionary = new Map<number, Promotion>()
     let storeData = await Promise.all(filteredrow.map(async (row) => {
         let promosId = (await getPromotionIdByStoreID(row.store_id)).rows
@@ -124,7 +95,7 @@ export async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStore
             if (!currentPromotionDictionary.has(promo_id)) {
                let promotion = await getPrmotionByID(promo_id)
                if (promotion != null) {
-                currentPromotionDictionary.set(promo_id, promotion) 
+                currentPromotionDictionary.set(promo_id, promotion)
               }
             }
             return currentPromotionDictionary.get(promo_id)
@@ -161,7 +132,7 @@ export async function getNearbyStoreID (loc: geoutils.LatLon): Promise<StoreIDWi
         store_id: row.store_id,
         distanceFrom: geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)})
     }}))).filter((x): x is StoreIDWithRange => x !== null)
-    
+
 }
 
 export async function getStoresFromID(ids: number[]): Promise<NearbyStoreData[]> {
@@ -173,7 +144,7 @@ export async function getStoresFromID(ids: number[]): Promise<NearbyStoreData[]>
             if (!currentPromotionDictionary.has(promo_id)) {
               let promotion = await getPrmotionByID(promo_id)
               if (promotion != null) {
-                currentPromotionDictionary.set(promo_id, promotion) 
+                currentPromotionDictionary.set(promo_id, promotion)
               }
             }
             return currentPromotionDictionary.get(promo_id)
