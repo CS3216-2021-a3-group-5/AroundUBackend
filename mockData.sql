@@ -37,9 +37,7 @@ do $$
     begin
         lon := 103.63;
         while lon < 103.99 loop
-            raise notice 'The current value of the latitude is %', lat;
             lat := 1.26;
-            raise notice 'The current value of the latitude is %', lat;
             while lat < 1.47 loop
                     INSERT INTO stores (
                         company_name,
@@ -106,3 +104,49 @@ do $$
             end if;
         end loop;
     end$$;
+
+INSERT INTO company_logos (
+    filename,
+    filepath,
+    mimetype
+)
+VALUES (
+           'Company 1',
+           'images\Company 1',
+           'image/jpeg'
+       ),
+       (
+           'Company 2',
+           'images\Company 2',
+           'image/jpeg'
+       ),
+       (
+           'Company 3',
+           'images\Company 3',
+           'image/jpeg'
+       );
+
+INSERT INTO promotion_pictures (
+    promotion_id,
+    filename,
+    filepath,
+    mimetype
+)
+VALUES (
+            1,
+            'Promo1',
+           'images\Promo1',
+           'image/jpeg'
+       ),
+       (
+            2,
+            'Promo2',
+            'images\Promo2',
+            'image/jpeg'
+       ),
+       (
+            3,
+            'Promo3',
+            'images\Promo3',
+            'image/jpeg'
+       );

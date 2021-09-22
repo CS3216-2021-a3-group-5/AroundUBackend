@@ -27,11 +27,11 @@ export const promoPicUpload = multer({
 
 export function postLogo(req: Request, res: Response) {
     // @ts-ignore
-    const { filename, mimetype, size } = req.file;
+    const { filename, mimetype } = req.file;
     console.log(req.params);
     const filepath = req.file?.path;
-    pool.query('INSERT INTO company_logos (filename, filepath, mimetype, size) VALUES ($1, $2, $3, $4)',
-        [filename, filepath, mimetype, size], (error: Error, results: QueryResult) => {
+    pool.query('INSERT INTO company_logos (filename, filepath, mimetype) VALUES ($1, $2, $3)',
+        [filename, filepath, mimetype], (error: Error, results: QueryResult) => {
             if (error) {
                 res.json({ success: false, message: 'upload failed', stack: error.stack })
             }
@@ -41,12 +41,12 @@ export function postLogo(req: Request, res: Response) {
 
 export function postPromoPic(req: Request, res: Response) {
     // @ts-ignore
-    const { filename, mimetype, size } = req.file;
+    const { filename, mimetype } = req.file;
     const promotion_id = req.params.promo_id;
     console.log(req.params);
     const filepath = req.file?.path;
-    pool.query('INSERT INTO promotion_pictures (promotion_id, filename, filepath, mimetype, size) VALUES ($1, $2, $3, $4, $5)',
-        [promotion_id, filename, filepath, mimetype, size], (error: Error, results: QueryResult) => {
+    pool.query('INSERT INTO promotion_pictures (promotion_id, filename, filepath, mimetype) VALUES ($1, $2, $3, $4)',
+        [promotion_id, filename, filepath, mimetype], (error: Error, results: QueryResult) => {
             if (error) {
                 res.json({ success: false, message: 'upload failed', stack: error.stack })
             }
