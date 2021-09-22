@@ -1,13 +1,13 @@
 DROP DATABASE IF EXISTS api;
 CREATE DATABASE api;
 \c api;
+DROP TABLE IF EXISTS company_logos;
 DROP TABLE IF EXISTS promotion_store;
 DROP TABLE IF EXISTS promotion_pictures;
 DROP TABLE IF EXISTS promotions;
 DROP TABLE IF EXISTS stores;
 DROP TABLE IF EXISTS companies;
 DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS company_logos;
 CREATE TABLE categories (category VARCHAR(100) PRIMARY KEY);
 INSERT INTO categories (category)
 VALUES ('Beauty & Wellness'),
@@ -44,8 +44,7 @@ CREATE TABLE promotion_pictures (
   promotion_id INTEGER NOT NULL REFERENCES promotions (promotion_id) ON DELETE CASCADE,
   filename TEXT PRIMARY KEY NOT NULL,
   filepath TEXT NOT NULL,
-  mimetype TEXT NOT NULL,
-  size BIGINT NOT NULL
+  mimetype TEXT NOT NULL
 );
 
 CREATE TABLE promotion_store (
@@ -57,6 +56,5 @@ CREATE TABLE promotion_store (
 CREATE TABLE company_logos(
     filename TEXT PRIMARY KEY REFERENCES companies (company_name) ON DELETE CASCADE,
     filepath TEXT NOT NULL,
-    mimetype TEXT NOT NULL,
-    size BIGINT NOT NULL
+    mimetype TEXT NOT NULL
 );

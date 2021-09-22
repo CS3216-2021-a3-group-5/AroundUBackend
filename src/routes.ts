@@ -48,12 +48,12 @@ function index(req: express.Request, res: express.Response) {
 routes.get('/', index);
 
 // Company APIs
-routes.get('/company/info', extractJWT, getCompanyInfo)
-routes.post('/company/login', companyLogin)
+routes.get('/company/info', extractJWT, getCompanyInfo);
+routes.post('/company/login', companyLogin);
 routes.options('/company/login', handlePreflight);
-routes.post('/company/registration', registerCompany)
+routes.post('/company/registration', registerCompany);
 routes.options('/company/registration', handlePreflight);
-routes.put('/company/update', extractJWT, updateCompanyDetails)
+routes.put('/company/update', extractJWT, updateCompanyDetails);
 
 // Store APIs
 routes.get('/store/nearby', nearbyStoresDataGET);
@@ -66,17 +66,16 @@ routes.get('/store/:id', getSingleStore);
 routes.options('/store/:id', handlePreflight);
 routes.post('/store/id', getStoresFromID);
 routes.post('/store/new', extractJWT, createNewStore);
-routes.post('/store/id', getStoresFromID);
 routes.options('/store/id', handlePreflight);
 routes.put('/store', extractJWT, updateStore);
 routes.delete('/store', deleteUserStore);
 
 // Promotion APIs
-routes.get('/promotion/company', extractJWT, getUserPromotions)
-routes.post('/promotion', extractJWT, createNewPromotion)
-routes.put('/promotion', extractJWT, updatePromo)
-routes.delete('/promotion', deleteUserPromotion)
-routes.delete('/promotion/fromStore', extractJWT, removePromoFromStore)
+routes.get('/promotion/company', extractJWT, getUserPromotions);
+routes.post('/promotion', extractJWT, createNewPromotion);
+routes.put('/promotion', extractJWT, updatePromo);
+routes.delete('/promotion', deleteUserPromotion);
+routes.delete('/promotion/fromStore', extractJWT, removePromoFromStore);
 
 // Image APIs
 routes.get('/image/logo', getLogo);
