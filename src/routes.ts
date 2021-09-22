@@ -22,11 +22,13 @@ routes.post('/nearbystores', nearbyStoresDataGET)
 routes.post('/login', userLogin)
 routes.options('/login', handlePreflight);
 routes.get('/userInfo', extractJWT, getUserInfo)
+routes.options('/userInfo', handlePreflight);
 routes.get('/userStoreInfo', extractJWT, getUserStore)
 routes.options('/userStoreInfo', handlePreflight);
 routes.post('/newStore', extractJWT, createNewStore)
 routes.post('/newPromotion', extractJWT, createNewPromotion)
 routes.get('/userPromotionInfo', extractJWT, getUserPromotions)
+routes.options('/userPromotionInfo', handlePreflight);
 routes.post('/registerUser', registerUser)
 routes.options('/registerUser', handlePreflight);
 routes.post('/uploadLogo/:company', logoUpload.single('image'), postLogo);

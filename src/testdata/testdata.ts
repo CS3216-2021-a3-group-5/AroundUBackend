@@ -8,7 +8,7 @@ export let testUsers = new Map<string, Company>([
     email: "email",
     password: "$2b$10$EgcNfNc4YJ5lzuAONIaG.uIXywIPq2vDfqFhiwrvlNXjq7qDd8Xwu",
     category: "cat1",
-    contact_no: 999
+    contact_number: 999
   }]
 ])
 export let testpromos = new Map<number, Promotion>([

@@ -14,6 +14,7 @@ export async function userLogin(req: Request, res: Response) {
   const body = JSON.parse(req.body)
   const email = body.email
   const password = body.password
+  console.log(`user ${body.email} is trying to login`)
   try {
     const companyInfo = await getCompanyByEmail(email)
     if (!await compare(password, companyInfo.password)) {
@@ -45,7 +46,7 @@ export async function registerUser(req: Request, res: Response) {
       password: await hashPassword(body.password),
       email: body.email,
       category: body.category,
-      contact_no: body.contact_no,
+      contact_number: body.contact_number,
       company_name: body.company_name,
     }
     await createCompany(newUser)
@@ -75,8 +76,11 @@ export async function handlePreflight(req: Request, res: Response) {
 }
 
 export async function getUserInfo(req: Request, res: Response) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+    
   try {
-    return res.status(OK).json(await getCompanyInfoByName(res.locals.jwt.company_name))
+    return res.status(OK).json( await getCompanyInfoByName(res.locals.jwt.company_name))
   } catch (err) {
     return res.status(NOTFOUND).json({
       message: "Fail to get user info."

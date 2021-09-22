@@ -5,7 +5,7 @@ export class Company {
   email: string
   password: string
   category: string
-  contact_no: number
+  contact_number: number
   company_name: string
 
   static randomCount: number = 100;
@@ -13,7 +13,7 @@ export class Company {
     Company.randomCount += 1;
     this.email = 'randomCompany' + Company.randomCount + '@email.com'
     this.category = 'Fashion'
-    this.contact_no = 123456
+    this.contact_number = 123456
     this.password = 'password'
     this.company_name = 'random company ' + Company.randomCount
   }
@@ -22,12 +22,12 @@ export class Company {
 export class CompanyInfo {
   email: string
   category: string
-  contact_no: number
+  contact_number: number
   company_name: string
   constructor(user: Company) {
     this.email = user.email
     this.category = user.category
-    this.contact_no = user.contact_no
+    this.contact_number = user.contact_number
     this.company_name = user.company_name
   }
 }
