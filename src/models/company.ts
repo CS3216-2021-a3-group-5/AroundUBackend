@@ -1,6 +1,3 @@
-import { textChangeRangeIsUnchanged } from "typescript"
-import {getRandomInt} from "./locationGenerator";
-
 export class Company {
   email: string
   password: string

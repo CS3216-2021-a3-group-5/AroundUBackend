@@ -1,12 +1,10 @@
-import {Request, Response, NextFunction} from "express"
+import {Request, Response} from "express"
 import { TOKEN_SECRET } from "../config/config";
 import * as jwt from "jsonwebtoken"
-import { Company, CompanyInfo } from "../models/company";
-import { getListOfPromotionsOfCompany } from "../models/promotion";
+import { Company } from "../models/company";
 import { hashPassword } from "../middleware/authethication";
 import { createCompany, getCompanyByEmail, getCompanyInfoByName } from "../database/companiesTable";
 import { compare } from "bcrypt";
-import { getListOfStoresOfCompany } from "../models/store";
 import { BADREQUEST, FORBIDDEN, NOTFOUND, OK } from "../statuscodes/statusCode";
 
 export async function userLogin(req: Request, res: Response) {
