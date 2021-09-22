@@ -12,9 +12,9 @@ const range = 30000;
 export async function nearbyStoresDataGET(req: Request, res: Response) {
     res.setHeader("Access-Control-Allow-Origin", "*");
 
-    const body = JSON.parse(req.body)
-    try{
-        let stores = await getNearbyStores(body.currentLocation)
+    try {
+        let currentLocation = {lat: parseFloat(req.query.lat as string), lon: parseFloat(req.query.lon as string)}
+        let stores = await getNearbyStores(currentLocation)
         return res.status(OK).json({
             stores: stores
         })
@@ -42,10 +42,10 @@ export async function nearbyStoreID(req: Request, res: Response) {
     res.setHeader("Access-Control-Allow-Origin", "*");
 
     //const body = JSON.parse(req.body)  
-    //let currentLocation = req.body.currentLocation
-    let currentLocation = JSON.parse(req.body).currentLocation
-    console.log(currentLocation)
+    //let currentLocation = req.body.currentLocation\
     try {
+    let currentLocation = {lat: parseFloat(req.query.lat as string), lon: parseFloat(req.query.lon as string)}
+    console.log(currentLocation)
         let ids = await getNearbyStoreID(currentLocation)
         console.log(ids)
         return res.status(OK).json({
