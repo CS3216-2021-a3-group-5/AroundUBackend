@@ -12,7 +12,7 @@ const range = 4000;
 export async function nearbyStoresDataGET(req: Request, res: Response) {
     const body = JSON.parse(req.body)
     try{
-        console.log(geoutils.distanceTo(JSON.parse(body).currentLocation, {lon: 1, lat: 1}))
+        //console.log(geoutils.distanceTo(JSON.parse(body).currentLocation, {lon: 1, lat: 1}))
         let stores = await getNearbyStores(JSON.parse(body).currentLocation)
         return res.status(OK).json({
             stores: stores
@@ -39,8 +39,9 @@ export async function nearbyStoresDataGET(req: Request, res: Response) {
 }
 export async function nearbyStoreID(req: Request, res: Response) {
     const body = JSON.parse(req.body)  
+    console.log(req.body.currentLOcation)
     try {
-        let ids = getNearbyStores(JSON.parse(body).currentLocation)
+        let ids = await getNearbyStoreID(JSON.parse(body).currentLocation)
         return res.status(OK).json({
             "store_id" : ids
         })
@@ -81,11 +82,15 @@ export async function getStoreByIds(req: Request, res: Response) {
     }
 }
 */
-async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStoreData[]> {
-    let filteredrow = (await getStores()).rows.filter((row) => geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
+export async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStoreData[]> {
+    let filteredrow = (await getStores()).rows.filter((row) => 
+    geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
+    
     let currentPromotionDictionary = new Map<number, Promotion>()
     let storeData = await Promise.all(filteredrow.map(async (row) => {
-        let promos = await Promise.all((await getPromotionIdByStoreID(row.store_id)).rows.map(async (row) => {
+        let promosId = (await getPromotionIdByStoreID(row.store_id)).rows
+        //console.log(promosId)
+        let promos = await Promise.all(promosId.map(async (row) => {
             let promo_id = row.promotion_id
             if (!currentPromotionDictionary.has(promo_id)) {
                let promotion = await getPrmotionByID(promo_id)
@@ -118,7 +123,6 @@ export interface StoreIDWithRange {
 }
 export async function getNearbyStoreID (loc: geoutils.LatLon): Promise<StoreIDWithRange[]> {
     let filteredrow = (await getStores()).rows.filter((row) => geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
-    
     return filteredrow.map((row) => {return {
         store_id: row.store_id,
         distanceFrom: geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)})
