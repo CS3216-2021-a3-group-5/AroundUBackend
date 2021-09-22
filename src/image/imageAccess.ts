@@ -60,6 +60,8 @@ export interface ImageFile {
 }
 
 export function getLogo(req: Request, res: Response) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
     const filename = req.params.company;
     console.log(filename);
     pool.query('SELECT * FROM company_logos WHERE filename = $1', [filename], (error: Error, results: QueryResult) => {
@@ -77,8 +79,10 @@ export function getLogo(req: Request, res: Response) {
  }
 
 export function getPromoPics(req: Request, res: Response) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    console.log("Test")
     const promotion_id = req.params.promo_id;
-    console.log(promotion_id);
+    console.log("ID:" + promotion_id);
     pool.query('SELECT * FROM promotion_pictures WHERE promotion_id = $1', [promotion_id], (error: Error, results: QueryResult) => {
         if (error) {
             res.status(404).json({success: false, message: 'not found', stack: error.stack})
