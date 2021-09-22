@@ -1,60 +1,87 @@
 import * as express from "express";
-import {json, urlencoded} from "body-parser";
-import { getNearbyStoreID, getSingleStore, getStoresFromID, nearbyStoreID, nearbyStoresDataGET } from "./routes/nearbyStoresAPI";
-import { getUserInfo, handlePreflight, registerUser, userLogin } from "./routes/userAPI";
+import { json, urlencoded } from "body-parser";
 import { extractJWT } from "./middleware/extractJWT";
-import { createNewStore, deleteUserStore, getUserStore, updateStore } from "./routes/manageStoresAPI";
+import {
+    getCompanyInfo,
+    handlePreflight,
+    registerCompany,
+    updateCompanyDetails,
+    companyLogin
+} from "./routes/companyAPI";
+import {
+    getSingleStore,
+    getStoresFromID,
+    nearbyStoreID,
+    nearbyStoresDataGET
+} from "./routes/nearbyStoresAPI";
+import {
+    createNewStore,
+    deleteUserStore,
+    getUserStore,
+    updateStore
+} from "./routes/storesAPI";
 import {
     createNewPromotion,
     deleteUserPromotion,
     getUserPromotions,
     removePromoFromStore,
     updatePromo
-} from "./routes/managePromotionsAPI";
-import {getLogo,getPromoPics, logoUpload, promoPicUpload, postLogo, postPromoPic} from "./image/imageAccess";
-import {deletePromotion} from "./database/promotionsTable";
-import { deleteStore } from "./database/storesTable";
-const routes = express.Router();
+} from "./routes/promotionsAPI";
+import {
+    getLogo,
+    getPromoPics,
+    logoUpload,
+    promoPicUpload,
+    postLogo,
+    postPromoPic
+} from "./image/imageAccess";
 
+const routes = express.Router();
 routes.use(json())
 routes.use(urlencoded({extended : true}))
 routes.use(express.text())
 
-
-function indexGET(req: express.Request, res: express.Response) {
-    res.json({ info: 'Node.js, Express, and Postgres API' })
+function index(req: express.Request, res: express.Response) {
+    res.json({ info: 'AroundU Server is running.' })
 }
 
-routes.get('/', indexGET);
-routes.get('/nearbystores', nearbyStoresDataGET)
-routes.options('/nearbystores', handlePreflight);
-routes.post('/login', userLogin)
-routes.options('/login', handlePreflight);
-routes.get('/userInfo', extractJWT, getUserInfo)
-routes.get('/userStoreInfo', extractJWT, getUserStore)
-routes.options('/userStoreInfo', handlePreflight);
-routes.post('/newStore', extractJWT, createNewStore)
-routes.post('/newPromotion', extractJWT, createNewPromotion)
-routes.get('/userPromotionInfo', extractJWT, getUserPromotions)
-routes.post('/registerUser', registerUser)
-routes.options('/registerUser', handlePreflight);
-routes.post('/uploadLogo/:company', logoUpload.single('image'), postLogo);
-routes.post('/uploadPromoPic/:promo_id', promoPicUpload.single('image'), postPromoPic);
-routes.get('/logo', getLogo);
-routes.get('/promoPic', getPromoPics);
-routes.get('/nearbyStoreId', nearbyStoreID)
-routes.options('/nearbyStoreId', handlePreflight);
-routes.post('/storesById', getStoresFromID)
-routes.options('/storesById', handlePreflight);
-routes.get('/stores/:id', getSingleStore)
-routes.options('/stores/:id', handlePreflight);
+routes.get('/', index);
+
+// Company APIs
+routes.get('/company/info', extractJWT, getCompanyInfo)
+routes.post('/company/login', companyLogin)
+routes.options('/company/login', handlePreflight);
+routes.post('/company/registration', registerCompany)
+routes.options('/company/registration', handlePreflight);
+routes.put('/company/update', extractJWT, updateCompanyDetails)
+
+// Store APIs
+routes.get('/store/nearby', nearbyStoresDataGET);
+routes.options('/store/nearby', handlePreflight);
+routes.get('/store/nearbyId', nearbyStoreID);
+routes.options('/store/nearbyId', handlePreflight);
+routes.get('/store/companyStoreInfo', extractJWT, getUserStore);
+routes.options('/store/companyStoreInfo', handlePreflight);
+routes.get('/store/:id', getSingleStore);
+routes.options('/store/:id', handlePreflight);
+routes.post('/store/id', getStoresFromID);
+routes.post('/store/new', extractJWT, createNewStore);
+routes.post('/store/id', getStoresFromID);
+routes.options('/store/id', handlePreflight);
+routes.put('/store', extractJWT, updateStore);
+routes.delete('/store', deleteUserStore);
+
+// Promotion APIs
+routes.get('/promotion/company', extractJWT, getUserPromotions)
+routes.post('/promotion', extractJWT, createNewPromotion)
+routes.put('/promotion', extractJWT, updatePromo)
 routes.delete('/promotion', deleteUserPromotion)
-routes.delete('/store', deleteUserStore)
-routes.post('/getStoresById', getStoresFromID)
-routes.post('/updatePromotion', extractJWT, updatePromo)
-routes.delete('/deletePromotion', extractJWT, deletePromotion)
-routes.post('/removePromoFromStore', extractJWT, removePromoFromStore)
-routes.post('/updateStore', extractJWT, updateStore)
-routes.delete('/deleteStore', extractJWT, deleteStore)
+routes.delete('/promotion/fromStore', extractJWT, removePromoFromStore)
+
+// Image APIs
+routes.get('/image/logo', getLogo);
+routes.post('/image/logo/:company', logoUpload.single('image'), postLogo);
+routes.get('/image/promotionPicture', getPromoPics);
+routes.post('/image/promotionPicture/:promo_id', promoPicUpload.single('image'), postPromoPic);
 
 export default routes;

@@ -55,7 +55,7 @@ CREATE TABLE promotion_store (
 );
 
 CREATE TABLE company_logos(
-    filename TEXT PRIMARY KEY,
+    filename TEXT PRIMARY KEY REFERENCES companies (company_name) ON DELETE CASCADE,
     filepath TEXT NOT NULL,
     mimetype TEXT NOT NULL,
     size BIGINT NOT NULL

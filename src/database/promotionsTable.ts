@@ -1,18 +1,17 @@
 import {QueryResult} from "pg";
 import { Promotion } from "../models/promotion"
-import { pool } from "./databaseSetUp";
+import { pool } from "./database";
 
-
-export function createPromotion(promo: Promotion): Promise<QueryResult> {
+export function insertPromotionRow(promo: Promotion): Promise<QueryResult> {
     return pool.query('INSERT INTO promotions (promo_name, end_date, details, company_name) VALUES ($1, $2, $3, $4) RETURNING promotion_id',
         [promo.promo_name, promo.end_date, promo.details, promo.company_name]);
 }
 
-export function getPromotionByCompany(company_name: string): Promise<QueryResult> {
+export function selectPromotionRowByCompany(company_name: string): Promise<QueryResult> {
     return pool.query('SELECT * FROM promotions WHERE company_name = $1', [company_name]);
 }
 
-export async function getPrmotionByID(id: number): Promise<Promotion | null> {
+export async function selectPromotionRowById(id: number): Promise<Promotion | null> {
     let row = (await pool.query('SELECT * FROM promotions WHERE promotion_id = $1', [id])).rows
     if (row.length ==0) return null
     return {
@@ -25,15 +24,11 @@ export async function getPrmotionByID(id: number): Promise<Promotion | null> {
     }
 }
 
-export function updatePromotion(promo: Promotion): Promise<QueryResult> {
+export function updatePromotionRow(promo: Promotion): Promise<QueryResult> {
     return pool.query('UPDATE promotions SET name = $1, end_date = $2, details = $3 WHERE id = $4',
         [promo.promo_name, promo.end_date, promo.details, promo.promotion_id]);
 }
 
-export function getPromotionById(id: number): Promise<QueryResult> {
-    return pool.query('SELECT * FROM promotions WHERE id = $1', [id]);
-}
-
-export function deletePromotion(promo_id: number): Promise<QueryResult> {
+export function deletePromotionRow(promo_id: number): Promise<QueryResult> {
     return pool.query('DELETE FROM promotions WHERE id = $1', [promo_id]);
 }

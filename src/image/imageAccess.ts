@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {OK} from "../statuscodes/statusCode";
-import {pool} from "../database/databaseSetUp";
+import {pool} from "../database/database";
 import {QueryResult} from "pg";
 
 const multer = require('multer');

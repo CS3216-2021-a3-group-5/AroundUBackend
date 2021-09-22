@@ -1,6 +1,6 @@
 import { LatLon } from "geolocation-utils";
-import { createPromotionAtStore, getPromotionIdByStoreID } from "../database/promotionStoreTable";
-import { createStore, getStoreByCompany } from "../database/storesTable";
+import { insertPromotionAtStoreRow, selectPromotionIdAtStore } from "../database/promotionStoreTable";
+import { insertStoreRow, selectStoreRowByCompany } from "../database/storesTable";
 import {Promotion} from "./promotion";
 
 export interface Store {
@@ -24,11 +24,11 @@ export interface NearbyStoreData {
 }
 
 export async function fillUpPromotionID(store: Store) {
-  store.promotionIDs = (await getPromotionIdByStoreID(store.store_id as number)).rows.map(row => row.promotion_id)
+  store.promotionIDs = (await selectPromotionIdAtStore(store.store_id as number)).rows.map(row => row.promotion_id)
 }
 
 export async function getListOfStoresOfCompany(companyName: string): Promise<Store[]> {
-  const stores = await getStoreByCompany(companyName)
+  const stores = await selectStoreRowByCompany(companyName)
 
   await Promise.all(stores.map(async store => {
     await fillUpPromotionID(store)
@@ -37,8 +37,8 @@ export async function getListOfStoresOfCompany(companyName: string): Promise<Sto
 }
 
 export async function saveNewStore(newStore: Store) {
-  let newStoreID = (await createStore(newStore)).rows[0].store_id
+  let newStoreID = (await insertStoreRow(newStore)).rows[0].store_id
   await Promise.all(newStore.promotionIDs.map(async (id) => {
-    await createPromotionAtStore(id, newStoreID)
+    await insertPromotionAtStoreRow(id, newStoreID)
   }))
 }

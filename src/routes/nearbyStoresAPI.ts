@@ -3,10 +3,10 @@ import { Request, Response } from "express";
 import {Promotion} from "../models/promotion";
 import { NearbyStoreData} from "../models/store";
 
-import {getStoreByIdWithCompany, getStores} from "../database/storesTable";
-import {getPrmotionByID} from "../database/promotionsTable";
+import {getStoreByIdWithCompany, selectAllStoresFromCompany} from "../database/storesTable";
+import {selectPromotionRowById} from "../database/promotionsTable";
 import { BADREQUEST, OK, NOTFOUND } from "../statuscodes/statusCode";
-import { getNumberOfPromotionOfStore, getPromotionIdByStoreID } from "../database/promotionStoreTable";
+import { selectNumberOfPromotionAtStore, selectPromotionIdAtStore } from "../database/promotionStoreTable";
 const range = 30000;
 
 export async function nearbyStoresDataGET(req: Request, res: Response) {
@@ -83,17 +83,17 @@ export async function getSingleStore(req: Request, res: Response) {
 }
 
 export async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStoreData[]> {
-    let filteredrow = (await getStores()).rows.filter((row) =>
+    let filteredrow = (await selectAllStoresFromCompany()).rows.filter((row) =>
     geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
 
     let currentPromotionDictionary = new Map<number, Promotion>()
     let storeData = await Promise.all(filteredrow.map(async (row) => {
-        let promosId = (await getPromotionIdByStoreID(row.store_id)).rows
+        let promosId = (await selectPromotionIdAtStore(row.store_id)).rows
         //console.log(promosId)
         let promos = (await Promise.all(promosId.map(async (row) => {
             let promo_id = row.promotion_id
             if (!currentPromotionDictionary.has(promo_id)) {
-               let promotion = await getPrmotionByID(promo_id)
+               let promotion = await selectPromotionRowById(promo_id)
                if (promotion != null) {
                 currentPromotionDictionary.set(promo_id, promotion)
               }
@@ -124,9 +124,9 @@ export interface StoreIDWithRange {
     distanceFrom: number
 }
 export async function getNearbyStoreID (loc: geoutils.LatLon): Promise<StoreIDWithRange[]> {
-    let filteredrow = (await getStores()).rows.filter((row) => geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
+    let filteredrow = (await selectAllStoresFromCompany()).rows.filter((row) => geoutils.distanceTo(loc, {lon: parseFloat(row.longitude), lat: parseFloat(row.latitude)}) < range)
     return (await Promise.all(filteredrow.map(async (row) => {
-        let count = await(getNumberOfPromotionOfStore(row.store_id))
+        let count = await(selectNumberOfPromotionAtStore(row.store_id))
         if (count == 0) return null;
         return {
         store_id: row.store_id,
@@ -139,10 +139,10 @@ export async function getStoresFromID(ids: number[]): Promise<NearbyStoreData[]>
     let currentPromotionDictionary = new Map<number, Promotion>()
     let data = await Promise.all(ids.map( async (store_id) => {
         let store = (await getStoreByIdWithCompany(store_id)).rows[0];
-        let promos = (await Promise.all((await getPromotionIdByStoreID(store_id)).rows.map(async (row) => {
+        let promos = (await Promise.all((await selectPromotionIdAtStore(store_id)).rows.map(async (row) => {
             let promo_id = row.promotion_id
             if (!currentPromotionDictionary.has(promo_id)) {
-              let promotion = await getPrmotionByID(promo_id)
+              let promotion = await selectPromotionRowById(promo_id)
               if (promotion != null) {
                 currentPromotionDictionary.set(promo_id, promotion)
               }
