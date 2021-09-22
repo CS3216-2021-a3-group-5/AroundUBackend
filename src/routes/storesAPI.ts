@@ -1,9 +1,9 @@
 import { Response, Request } from "express"
-import { deleteStore, getStoreById, updateStoreTable} from "../database/storesTable"
+import { deleteStoreRow, selectStoreCompanyRowByCompany, updateStoreRow} from "../database/storesTable"
 import { saveNewStore } from "../models/store"
 import { getListOfStoresOfCompany } from "../models/store"
 import { BADREQUEST, FORBIDDEN, OK } from "../statuscodes/statusCode"
-import {createPromotionAtStore, deleteByStore} from "../database/promotionStoreTable";
+import {insertPromotionAtStoreRow, deleteRowByStore} from "../database/promotionStoreTable";
 
 export async function createNewStore(req: Request, res: Response) {
     const body = JSON.parse(req.body)
@@ -47,13 +47,13 @@ export async function deleteUserStore(req: Request, res: Response) {
     let body = JSON.parse(req.body)
     let store_id = body.store_id
     try {
-        let store = await getStoreById(store_id)
+        let store = await selectStoreCompanyRowByCompany(store_id)
         if (store?.company_name != res.locals.jwt.company_name) {
             return res.status(FORBIDDEN).json({
                 message: "This is not your store!"
             })
         }
-        await deleteStore(store_id)
+        await deleteStoreRow(store_id)
         return res.status(OK).json({
             message: "deletion success!"
         })
@@ -75,10 +75,10 @@ export async function updateStore(req: Request, res: Response) {
             promotionIDs: req.body.promotionIDs,
             company_name: res.locals.jwt.company_name
         };
-        await updateStoreTable(store);
-        await deleteByStore(store.store_id);
+        await updateStoreRow(store);
+        await deleteRowByStore(store.store_id);
         await Promise.all(store.promotionIDs.map(async (id: number) => {
-            await createPromotionAtStore(id, store.store_id)
+            await insertPromotionAtStoreRow(id, store.store_id)
         }))
         return res.status(OK).send();
     } catch (err) {

@@ -55,14 +55,14 @@ do $$
                                'address road ' || counter,
                                hours
                            );
-                lat := lat + 0.0035;
+                lat := lat + 0.007;
                 counter := counter + 1;
                 company_counter := company_counter + 1;
                     if company_counter > 3 then
                         company_counter := 1;
                     end if;
             end loop;
-            lon := lon + 0.003;
+            lon := lon + 0.006;
         end loop;
     end$$;
 
@@ -96,7 +96,7 @@ do $$
         promo_id integer := 1;
         store_id integer := 1;
     begin
-        while store_id < 73 loop
+        while store_id < 1700 loop
             INSERT INTO promotion_store (promotion_id, store_id)
             VALUES (promo_id, store_id);
             promo_id := promo_id + 1;
