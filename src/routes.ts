@@ -19,8 +19,7 @@ function indexGET(req: express.Request, res: express.Response) {
 }
 
 routes.get('/', indexGET);
-routes.post('/nearbystores', nearbyStoresDataGET)
-routes.options('/nearbystores', handlePreflight);
+routes.get('/nearbystores', nearbyStoresDataGET)
 routes.post('/login', userLogin)
 routes.options('/login', handlePreflight);
 routes.get('/userInfo', extractJWT, getUserInfo)
@@ -35,13 +34,10 @@ routes.post('/uploadLogo/:company', logoUpload.single('image'), postLogo);
 routes.post('/uploadPromoPic/:promo_id', promoPicUpload.single('image'), postPromoPic);
 routes.get('/logo', getLogo);
 routes.get('/promoPic', getPromoPics);
-routes.post('/nearbyStoreId', nearbyStoreID)
-routes.options('/nearbyStoreId', handlePreflight);
+routes.get('/nearbyStoreId', nearbyStoreID)
 routes.post('/storesById', getStoresFromID)
-routes.options('/storesById', handlePreflight);
 routes.get('/stores/:id', getSingleStore)
-routes.options('/stores/:id', handlePreflight);
+  
 routes.delete('/promotion', deleteUserPromotion)
 routes.delete('/store', deleteUserStore)
-
 export default routes;

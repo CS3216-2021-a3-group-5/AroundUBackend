@@ -7,14 +7,13 @@ import {getStoreByIdWithCompany, getStores} from "../database/storesTable";
 import {getPrmotionByID} from "../database/promotionsTable";
 import { BADREQUEST, OK, NOTFOUND } from "../statuscodes/statusCode";
 import { getNumberOfPromotionOfStore, getPromotionIdByStoreID } from "../database/promotionStoreTable";
-const range = 30000;
+const range = 4000;
 
 export async function nearbyStoresDataGET(req: Request, res: Response) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-
-    const body = JSON.parse(req.body)
     try{
-        let stores = await getNearbyStores(body.currentLocation)
+    let currentLocation: geoutils.Location = {lon: parseFloat(req.query.lon as string), lat:  parseFloat(req.query.lat as string)};
+        //console.log(geoutils.distanceTo(JSON.parse(body).currentLocation, {lon: 1, lat: 1}))
+        let stores = await getNearbyStores(currentLocation)
         return res.status(OK).json({
             stores: stores
         })
@@ -39,15 +38,12 @@ export async function nearbyStoresDataGET(req: Request, res: Response) {
     }*/
 }
 export async function nearbyStoreID(req: Request, res: Response) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-
     //const body = JSON.parse(req.body)  
     //let currentLocation = req.body.currentLocation
-    let currentLocation = JSON.parse(req.body).currentLocation
-    console.log(currentLocation)
     try {
+    let currentLocation: geoutils.Location = {lon: parseFloat(req.query.lon as string), lat:  parseFloat(req.query.lat as string)};
+    console.log(req.body.currentLOcation)
         let ids = await getNearbyStoreID(currentLocation)
-        console.log(ids)
         return res.status(OK).json({
             "store_id" : ids
         })
@@ -58,8 +54,6 @@ export async function nearbyStoreID(req: Request, res: Response) {
     }
 }
 export async function getStoreByIds(req: Request, res: Response) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-
     const body = JSON.parse(req.body)  
     try {
         let stores = await getStoresFromID(body.store_ids)
@@ -75,8 +69,6 @@ export async function getStoreByIds(req: Request, res: Response) {
 }
 
 export async function getSingleStore(req: Request, res: Response) { 
-    res.setHeader("Access-Control-Allow-Origin", "*");
-
     try {
         let stores = await getStoresFromID([parseInt(req.params.id)])
         if (stores.length ==0) {
