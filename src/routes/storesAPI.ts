@@ -67,7 +67,13 @@ export async function deleteUserStore(req: Request, res: Response) {
 
 export async function updateStore(req: Request, res: Response) {
     try {
-        const store = {
+        let store = await selectStoreCompanyRowByCompany(req.body.store_id)
+        if (store?.company_name != res.locals.jwt.company_name) {
+            return res.status(FORBIDDEN).json({
+                message: "This is not your store!"
+            })
+        }
+        const newStore = {
             store_id: req.body.store_id,
             address: req.body.address,
             location: req.body.location,
@@ -75,10 +81,10 @@ export async function updateStore(req: Request, res: Response) {
             promotionIDs: req.body.promotionIDs,
             company_name: res.locals.jwt.company_name
         };
-        await updateStoreRow(store);
-        await deleteRowByStore(store.store_id);
-        await Promise.all(store.promotionIDs.map(async (id: number) => {
-            await insertPromotionAtStoreRow(id, store.store_id)
+        await updateStoreRow(newStore);
+        await deleteRowByStore(newStore.store_id);
+        await Promise.all(newStore.promotionIDs.map(async (id: number) => {
+            await insertPromotionAtStoreRow(id, newStore.store_id)
         }))
         return res.status(OK).send();
     } catch (err) {
