@@ -7,7 +7,7 @@ import {getStoreByIdWithCompany, selectAllStoresFromCompany} from "../database/s
 import {selectPromotionRowById} from "../database/promotionsTable";
 import { BADREQUEST, OK, NOTFOUND } from "../statuscodes/statusCode";
 import { selectNumberOfPromotionAtStore, selectPromotionIdAtStore } from "../database/promotionStoreTable";
-const range = 1000;
+const range = 2000;
 
 export async function nearbyStoresDataGET(req: Request, res: Response) {
     res.setHeader("Access-Control-Allow-Origin", "*");
