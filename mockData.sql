@@ -32,13 +32,14 @@ do $$
         lon numeric := 103.63;
         lat numeric := 1.26;
         counter integer := 100;
-        company_counter integer := 1;
         hours varchar := '8 am to 8 pm daily';
+	randomstore varchar := '';
     begin
         lon := 103.63;
         while lon < 103.99 loop
             lat := 1.26;
             while lat < 1.47 loop
+                    SELECT company_name FROM companies ORDER BY RANDOM() LIMIT 1 INTO randomstore;
                     INSERT INTO stores (
                         company_name,
                         longitude,
@@ -47,18 +48,14 @@ do $$
                         opening_hours
                     )
                     VALUES (
-                               'Company ' || company_counter,
-                               lon,
-                               lat,
-                               'address road ' || counter,
+                               randomstore,
+                               lon + random() * 0.006 - 0.003,
+                               lat + random() * 0.006 - 0.003,
+                               randomstore || ' Road ' || counter,
                                hours
                            );
                 lat := lat + 0.007;
                 counter := counter + 1;
-                company_counter := company_counter + 1;
-                    if company_counter > 3 then
-                        company_counter := 1;
-                    end if;
             end loop;
             lon := lon + 0.006;
         end loop;
