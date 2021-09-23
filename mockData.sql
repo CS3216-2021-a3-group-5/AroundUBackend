@@ -6,24 +6,24 @@ INSERT INTO companies (
     category
 )
 VALUES (
-           'Company 1',
-           'Company1@email.com',
+           'LemonInc',
+           'lemoninc@email.com',
            'password1',
-           11111111,
+           82349823,
            'Electronics'
        ),
        (
-           'Company 2',
-           'Company12@email.com',
+           'PotatoMan',
+           'PotatoMan@email.com',
            'password12',
-           11111111,
+           94659873,
            'Food'
        ),
        (
-           'Company 3',
-           'Company123@email.com',
+           'MANGOsTeen',
+           'mangosteen@email.com',
            'password123',
-           11111111,
+           88832434,
            'Fashion'
        );
 
@@ -68,22 +68,22 @@ INSERT INTO promotions (
     details
 )
 VALUES (
-           'Company 1',
-           'promo 1',
-           '2021-12-12',
-           '1 long description here'
+           'LemonInc',
+           '20% off all products',
+           '2021-12-31',
+           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed ullamcorper morbi tincidunt ornare massa eget egestas. Nibh sit amet commodo nulla facilisi nullam. Dictum varius duis at consectetur lorem donec massa. Neque vitae tempus quam pellentesque. Consectetur adipiscing elit duis tristique sollicitudin nibh. Sed enim ut sem viverra. Quam elementum pulvinar etiam non quam lacus suspendisse faucibus interdum. In ornare quam viverra orci sagittis eu volutpat odio. Leo vel fringilla est ullamcorper eget nulla facilisi etiam. Morbi enim nunc faucibus a. Est ultricies integer quis auctor elit sed vulputate.'
        ),
        (
-           'Company 2',
-           'promo 2',
-           '2021-12-12',
-           '2 long description here'
+           'PotatoMan',
+           'Free potato with any purchase.',
+           '2021-11-01',
+           'Tristique senectus et netus et malesuada. Accumsan lacus vel facilisis volutpat est velit. Pellentesque dignissim enim sit amet venenatis urna. Aliquam nulla facilisi cras fermentum odio eu feugiat. Scelerisque viverra mauris in aliquam sem fringilla. Cursus in hac habitasse platea dictumst quisque sagittis purus. Mauris augue neque gravida in fermentum et sollicitudin ac. Cras semper auctor neque vitae tempus quam pellentesque nec nam. Molestie nunc non blandit massa enim. Interdum consectetur libero id faucibus nisl tincidunt eget. Mattis nunc sed blandit libero volutpat sed cras. Duis ut diam quam nulla porttitor massa. Sed vulputate mi sit amet mauris commodo quis imperdiet. Ridiculus mus mauris vitae ultricies leo integer malesuada. At tellus at urna condimentum mattis pellentesque. Morbi tincidunt augue interdum velit euismod.'
        ),
        (
-           'Company 3',
-           'promo 3',
+           'MANGOsTeen',
+           'Mystery free gift!',
            '2021-12-12',
-           '3 long description here'
+           'Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque sit. Enim nunc faucibus a pellentesque. Id interdum velit laoreet id. At risus viverra adipiscing at in tellus integer. Vulputate enim nulla aliquet porttitor lacus luctus accumsan tortor. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi. Feugiat nibh sed pulvinar proin. Nunc non blandit massa enim nec dui nunc. Est ultricies integer quis auctor elit sed vulputate mi. Purus in mollis nunc sed id. Condimentum mattis pellentesque id nibh tortor id aliquet lectus. Lorem dolor sed viverra ipsum nunc aliquet bibendum enim facilisis. Sed enim ut sem viverra aliquet. Sit amet est placerat in egestas erat imperdiet sed euismod. Eget nulla facilisi etiam dignissim. Velit laoreet id donec ultrices tincidunt arcu non.'
        );
 
 do $$
@@ -108,17 +108,17 @@ INSERT INTO company_logos (
     mimetype
 )
 VALUES (
-           'Company 1',
+           'LemonInc',
            'images\Company 1',
            'image/jpeg'
        ),
        (
-           'Company 2',
+           'PotatoMan',
            'images\Company 2',
            'image/jpeg'
        ),
        (
-           'Company 3',
+           'MANGOsTeen',
            'images\Company 3',
            'image/jpeg'
        );
