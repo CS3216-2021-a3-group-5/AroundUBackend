@@ -1,7 +1,7 @@
 import { Response, Request } from "express"
 import { getListOfPromotionsOfCompany, saveNewPromotion } from "../models/promotion"
 import { BADREQUEST, FORBIDDEN, OK } from "../statuscodes/statusCode"
-import {deletePromotionRow, selectPromotionRowById, updatePromotionRow} from "../database/promotionsTable"
+import {deletePromotionRow, getPromotionCompanyName, selectPromotionRowById, updatePromotionRow} from "../database/promotionsTable"
 import {
     deletePromotionAtStoreRow,
     deleteRowByPromotion,
@@ -47,8 +47,7 @@ export async function deleteUserPromotion(req: Request, res: Response) {
     let promo_id = body.promotion_id
     console.log(promo_id)
     try {
-        let promo = await selectPromotionRowById(promo_id)
-        if (promo?.company_name != res.locals.jwt.company_name) {
+        if (await getPromotionCompanyName(body.promotion_id) != res.locals.jwt.company_name) {
             return res.status(FORBIDDEN).json({
                 error: "This promotion does not belong to you!"
             })
@@ -78,8 +77,7 @@ export async function removePromoFromStore(req: Request, res: Response) {
 export async function updatePromo(req: Request, res: Response) {
     let body = JSON.parse(req.body) 
     try {
-        let promo = await selectPromotionRowById(req.body.promotion_id)
-        if (promo?.company_name != res.locals.jwt.company_name) {
+        if (await getPromotionCompanyName(body.promotion_id) != res.locals.jwt.company_name) {
             return res.status(FORBIDDEN).json({
                 error: "This promotion does not belong to you!"
             })
