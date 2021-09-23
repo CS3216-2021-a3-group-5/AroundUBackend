@@ -37,8 +37,12 @@ export async function getListOfStoresOfCompany(companyName: string): Promise<Sto
 }
 
 export async function saveNewStore(newStore: Store) {
-  let newStoreID = (await insertStoreRow(newStore)).rows[0].store_id
-  await Promise.all(newStore.promotionIDs.map(async (id) => {
-    await insertPromotionAtStoreRow(id, newStoreID)
-  }))
+  if (newStore.promotionIDs == null) {
+    insertStoreRow(newStore)
+  } else {
+    let newStoreID = (await insertStoreRow(newStore)).rows[0].store_id
+    await Promise.all(newStore.promotionIDs.map(async (id) => {
+      await insertPromotionAtStoreRow(id, newStoreID)
+    })) 
+  }
 }
