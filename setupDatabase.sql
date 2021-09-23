@@ -58,3 +58,6 @@ CREATE TABLE company_logos(
     filepath TEXT NOT NULL,
     mimetype TEXT NOT NULL
 );
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO me;
+
