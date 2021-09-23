@@ -1,4 +1,4 @@
-import { QueryResult } from "pg";
+import { Query, QueryResult } from "pg";
 import { Store } from "../models/store"
 import { pool } from "./database";
 
@@ -13,8 +13,16 @@ export function updateStoreRow(store: Store): Promise<QueryResult> {
         [store.location.lon, store.location.lat, store.address, store.opening_hours, store.store_id]);
 }
 
-export function getStoreByIdWithCompany(id: number): Promise<QueryResult> {
+export async function getStoreByIdWithCompany(id: number): Promise<QueryResult> {
     return pool.query('SELECT * FROM stores JOIN companies ON stores.company_name = companies.company_name WHERE store_id = $1', [id]);
+}
+
+export async function getStoreCompanyName(id: number): Promise<string | null> {
+    let data = (await pool.query('SELECT company_name FROM stores WHERE store_id = $1', [id])).rows;
+    if (data.length == 0) {
+        return null;
+    } 
+    return data[0].company_name
 }
 
 export async function selectStoreCompanyRowByCompany(id: number): Promise<Store | null> {

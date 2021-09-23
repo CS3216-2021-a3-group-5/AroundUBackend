@@ -24,6 +24,12 @@ export async function selectPromotionRowById(id: number): Promise<Promotion | nu
     }
 }
 
+export async function getPromotionCompanyName(id: number): Promise<string | null> {
+    let row = (await pool.query('SELECT company_name FROM promotions WHERE promotion_id = $1', [id])).rows
+    if (row.length ==0) return null
+    return row[0].company_name
+}
+
 export function updatePromotionRow(promo: Promotion): Promise<QueryResult> {
     return pool.query('UPDATE promotions SET promo_name = $1, end_date = $2, details = $3 WHERE promotion_id = $4',
         [promo.promo_name, promo.end_date, promo.details, promo.promotion_id]);

@@ -1,5 +1,5 @@
 import { Response, Request } from "express"
-import { deleteStoreRow, selectStoreCompanyRowByCompany, updateStoreRow} from "../database/storesTable"
+import { deleteStoreRow, getStoreCompanyName, selectStoreCompanyRowByCompany, updateStoreRow} from "../database/storesTable"
 import { saveNewStore } from "../models/store"
 import { getListOfStoresOfCompany } from "../models/store"
 import { BADREQUEST, FORBIDDEN, OK } from "../statuscodes/statusCode"
@@ -47,8 +47,7 @@ export async function deleteUserStore(req: Request, res: Response) {
     let body = JSON.parse(req.body)
     let store_id = body.store_id
     try {
-        let store = await selectStoreCompanyRowByCompany(store_id)
-        if (store?.company_name != res.locals.jwt.company_name) {
+        if (await getStoreCompanyName(store_id) != res.locals.jwt.company_name) {
             return res.status(FORBIDDEN).json({
                 message: "This is not your store!"
             })
@@ -68,8 +67,7 @@ export async function deleteUserStore(req: Request, res: Response) {
 export async function updateStore(req: Request, res: Response) {
     let body = JSON.parse(req.body)
     try {
-        let store = await selectStoreCompanyRowByCompany(req.body.store_id)
-        if (store?.company_name != res.locals.jwt.company_name) {
+        if (await getStoreCompanyName(body.store_id) != res.locals.jwt.company_name) {
             return res.status(FORBIDDEN).json({
                 message: "This is not your store!"
             })
