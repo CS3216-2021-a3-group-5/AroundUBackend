@@ -14,6 +14,10 @@ export function deleteRowByStore(store_id: number): Promise<QueryResult> {
     return pool.query('DELETE FROM promotion_store WHERE store_id = $1', [store_id]);
 }
 
+export function deleteRowByPromotion(promo_id: number): Promise<QueryResult> {
+    return pool.query('DELETE FROM promotion_store WHERE promotion_id = $1', [promo_id]);
+}
+
 export async function selectPromotionIdAtStore(store_id: number): Promise<QueryResult> {
     return pool.query('SELECT promotion_id FROM promotion_store WHERE store_id = $1', [store_id])
 }

@@ -2,7 +2,11 @@ import { Response, Request } from "express"
 import { getListOfPromotionsOfCompany, saveNewPromotion } from "../models/promotion"
 import { BADREQUEST, FORBIDDEN, OK } from "../statuscodes/statusCode"
 import {deletePromotionRow, selectPromotionRowById, updatePromotionRow} from "../database/promotionsTable"
-import {deletePromotionAtStoreRow} from "../database/promotionStoreTable";
+import {
+    deletePromotionAtStoreRow,
+    deleteRowByPromotion,
+    insertPromotionAtStoreRow
+} from "../database/promotionStoreTable";
 
 export async function createNewPromotion(req: Request, res: Response) {
     try {
@@ -70,14 +74,19 @@ export async function removePromoFromStore(req: Request, res: Response) {
 
 export async function updatePromo(req: Request, res: Response) {
     try {
-        await updatePromotionRow({
+        const promotion = {
             promotion_id: req.body.promotion_id,
             company_name: res.locals.jwt.company_name,
             promo_name: req.body.promo_name,
             end_date: req.body.end_date,
             details: req.body.details,
             storeIDs: req.body.store_ids
-        })
+        };
+        await updatePromotionRow(promotion);
+        await deleteRowByPromotion(promotion.promotion_id);
+        await Promise.all(promotion.storeIDs.map(async (id: number) => {
+            await insertPromotionAtStoreRow(promotion.promotion_id, id)
+        }))
         return res.status(OK).send();
     } catch (err) {
         return res.status(BADREQUEST).send(err)
