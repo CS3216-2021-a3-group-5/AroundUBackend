@@ -74,7 +74,7 @@ export async function removePromoFromStore(req: Request, res: Response) {
 
 export async function updatePromo(req: Request, res: Response) {
     try {
-        let promo = await selectPromotionRowById(req.body.promo_id)
+        let promo = await selectPromotionRowById(req.body.promotion_id)
         if (promo?.company_name != res.locals.jwt.company_name) {
             return res.status(FORBIDDEN).json({
                 error: "This promotion does not belong to you!"
