@@ -1,22 +1,9 @@
-import { textChangeRangeIsUnchanged } from "typescript"
-import {getRandomInt} from "./locationGenerator";
-
-export class Company {
+export interface Company {
   email: string
   password: string
   category: string
   contact_number: number
   company_name: string
-
-  static randomCount: number = 100;
-  constructor() {
-    Company.randomCount += 1;
-    this.email = 'randomCompany' + Company.randomCount + '@email.com'
-    this.category = 'Fashion'
-    this.contact_number = 123456
-    this.password = 'password'
-    this.company_name = 'random company ' + Company.randomCount
-  }
 }
 
 export class CompanyInfo {

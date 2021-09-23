@@ -1,22 +1,20 @@
-import {Request, Response, NextFunction} from "express"
+import {Request, Response} from "express"
 import { TOKEN_SECRET } from "../config/config";
 import * as jwt from "jsonwebtoken"
-import { Company, CompanyInfo } from "../models/company";
-import { getListOfPromotionsOfCompany } from "../models/promotion";
+import { Company } from "../models/company";
 import { hashPassword } from "../middleware/authethication";
-import { createCompany, getCompanyByEmail, getCompanyInfoByName } from "../database/companiesTable";
+import {insertCompanyRow, selectCompanyRowByEmail, selectCompanyRowByName, updateCompanyRow} from "../database/companiesTable";
 import { compare } from "bcrypt";
-import { getListOfStoresOfCompany } from "../models/store";
 import { BADREQUEST, FORBIDDEN, NOTFOUND, OK } from "../statuscodes/statusCode";
 
-export async function userLogin(req: Request, res: Response) {
+export async function companyLogin(req: Request, res: Response) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   const body = JSON.parse(req.body)
   const email = body.email
   const password = body.password
   console.log(`user ${body.email} is trying to login`)
   try {
-    const companyInfo = await getCompanyByEmail(email)
+    const companyInfo = await selectCompanyRowByEmail(email)
     if (!await compare(password, companyInfo.password)) {
       return res.status(FORBIDDEN).json({
         message: "Wrong password"
@@ -38,7 +36,7 @@ export async function userLogin(req: Request, res: Response) {
 
 }
 
-export async function registerUser(req: Request, res: Response) {
+export async function registerCompany(req: Request, res: Response) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   const body = JSON.parse(req.body)
   try {
@@ -49,7 +47,7 @@ export async function registerUser(req: Request, res: Response) {
       contact_number: body.contact_number,
       company_name: body.company_name,
     }
-    await createCompany(newUser)
+    await insertCompanyRow(newUser)
   } catch (err) {
     console.log(err)
     return res.status(BADREQUEST).json({
@@ -75,15 +73,40 @@ export async function handlePreflight(req: Request, res: Response) {
   })
 }
 
-export async function getUserInfo(req: Request, res: Response) {
+export async function getCompanyInfo(req: Request, res: Response) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     
   try {
-    return res.status(OK).json( await getCompanyInfoByName(res.locals.jwt.company_name))
+    return res.status(OK).json( await selectCompanyRowByName(res.locals.jwt.company_name))
   } catch (err) {
     return res.status(NOTFOUND).json({
       message: "Fail to get user info."
     })
   }
+}
+
+export async function updateCompanyDetails(req: Request, res: Response) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers",
+      "Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+  const body = JSON.parse(req.body)
+  try {
+    const updatedCompany: Company = {
+      password: await hashPassword(body.password),
+      email: body.email,
+      category: body.category,
+      contact_number: body.contact_number,
+      company_name: body.company_name,
+    }
+    await updateCompanyRow(updatedCompany)
+  } catch (err) {
+    console.log(err)
+    return res.status(BADREQUEST).json({
+      message: "Something bad happen in our server" // Need to handle err
+    })
+  }
+  return res.status(OK).json({
+    message: "Success!"
+  })
 }

@@ -8,8 +8,6 @@ export async function createNewPromotion(req: Request, res: Response) {
     res.setHeader("Access-Control-Allow-Headers", "Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
   
     try {
-        console.log(req.body)
-        //const body = req.body
         const body = JSON.parse(req.body)
         await saveNewPromotion({
             promotion_id: body.promotion_id,

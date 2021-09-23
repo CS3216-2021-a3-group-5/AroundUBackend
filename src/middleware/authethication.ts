@@ -1,7 +1,4 @@
-import {compare, genSalt, hash} from 'bcrypt'
-import { getCompanyByEmail } from '../database/companiesTable'
-import { Company } from '../models/company'
-import { testUsers } from '../testdata/testdata'
+import {genSalt, hash} from 'bcrypt'
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = await genSalt()

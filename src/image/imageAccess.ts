@@ -1,22 +1,10 @@
 import {Request, Response} from "express";
 import {OK} from "../statuscodes/statusCode";
+import {pool} from "../database/database";
+import {QueryResult} from "pg";
 
 const multer = require('multer');
 const path = require('path');
-const knex = require('knex');
-
-// Create database object
-const db = knex(
-    {
-        client: 'pg',
-        connection: {
-            host: '127.0.0.1',
-            user: 'me',
-            password: 'password',
-            database: 'api',
-        },
-    }
-);
 
 const logoStorage = multer.diskStorage({
     destination: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
@@ -25,7 +13,7 @@ const logoStorage = multer.diskStorage({
     filename: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
         const company = req.params.company;
         console.log(company);
-        cb(null, company + '-logo')
+        cb(null, company)
     }
 });
 
@@ -39,36 +27,31 @@ export const promoPicUpload = multer({
 
 export function postLogo(req: Request, res: Response) {
     // @ts-ignore
-    const { filename, mimetype, size } = req.file;
+    const { filename, mimetype } = req.file;
     console.log(req.params);
     const filepath = req.file?.path;
-    db.insert({
-        filename,
-        filepath,
-        mimetype,
-        size,
-    })
-        .into('image_files')
-        .then(() => res.json({ success: true, filename }))
-        .catch((err: Error) => res.json({ success: false, message: 'upload failed', stack: err.stack }));
+    pool.query('INSERT INTO company_logos (filename, filepath, mimetype) VALUES ($1, $2, $3)',
+        [filename, filepath, mimetype], (error: Error, results: QueryResult) => {
+            if (error) {
+                res.json({ success: false, message: 'upload failed', stack: error.stack })
+            }
+            res.json({ success: true, filename })
+        });
 }
 
 export function postPromoPic(req: Request, res: Response) {
     // @ts-ignore
-    const { filename, mimetype, size } = req.file;
+    const { filename, mimetype } = req.file;
     const promotion_id = req.params.promo_id;
     console.log(req.params);
     const filepath = req.file?.path;
-    db.insert({
-        promotion_id,
-        filename,
-        filepath,
-        mimetype,
-        size,
-    })
-        .into('promotion_pictures')
-        .then(() => res.json({ success: true, filename }))
-        .catch((err: Error) => res.json({ success: false, message: 'upload failed', stack: err.stack }));
+    pool.query('INSERT INTO promotion_pictures (promotion_id, filename, filepath, mimetype) VALUES ($1, $2, $3, $4)',
+        [promotion_id, filename, filepath, mimetype], (error: Error, results: QueryResult) => {
+            if (error) {
+                res.json({ success: false, message: 'upload failed', stack: error.stack })
+            }
+            res.json({ success: true, filename })
+        });
 }
 
 export interface ImageFile {
@@ -77,35 +60,39 @@ export interface ImageFile {
 }
 
 export function getLogo(req: Request, res: Response) {
-    const { filename } = JSON.parse(req.body);
-    db.select('*')
-        .from('image_files')
-        .where({ filename })
-        .then((images: Array<ImageFile>) => {
-            if (images[0]) {
-                const dirname = path.resolve();
-                const fullfilepath = path.join(dirname, images[0].filepath);
-                return res.status(OK).type(images[0].mimetype).sendFile(fullfilepath);
-            }
-            return Promise.reject(new Error('Image does not exist'));
-        })
-        .catch((err: { stack: any; }) => res.status(404).json({success: false, message: 'not found', stack: err.stack}),
-        );
-}
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
+    const filename = req.params.company;
+    console.log(filename);
+    pool.query('SELECT * FROM company_logos WHERE filename = $1', [filename], (error: Error, results: QueryResult) => {
+        if (error) {
+            res.status(404).json({success: false, message: 'not found', stack: error.stack})
+        }
+        const images = results.rows;
+        if (images[0]) {
+            const dirname = path.resolve();
+            const fullfilepath = path.join(dirname, images[0].filepath);
+            return res.status(OK).type(images[0].mimetype).sendFile(fullfilepath);
+        }
+        return Promise.reject(new Error('Image does not exist'));
+    });
+ }
 
 export function getPromoPics(req: Request, res: Response) {
-    const { promotion_id } = JSON.parse(req.body);
-    db.select('*')
-        .from('promotion_pictures')
-        .where({ promotion_id })
-        .then((images: Array<ImageFile>) => {
-            if (images[0]) {
-                const dirname = path.resolve();
-                const fullfilepath = path.join(dirname, images[0].filepath);
-                return res.status(OK).type(images[0].mimetype).sendFile(fullfilepath);
-            }
-            return Promise.reject(new Error('Image does not exist'));
-        })
-        .catch((err: { stack: any; }) => res.status(404).json({success: false, message: 'not found', stack: err.stack}),
-        );
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    console.log("Test")
+    const promotion_id = req.params.promo_id;
+    console.log("ID:" + promotion_id);
+    pool.query('SELECT * FROM promotion_pictures WHERE promotion_id = $1', [promotion_id], (error: Error, results: QueryResult) => {
+        if (error) {
+            res.status(404).json({success: false, message: 'not found', stack: error.stack})
+        }
+        const images = results.rows;
+        if (images[0]) {
+            const dirname = path.resolve();
+            const fullfilepath = path.join(dirname, images[0].filepath);
+            return res.status(OK).type(images[0].mimetype).sendFile(fullfilepath);
+        }
+        return Promise.reject(new Error('Image does not exist'));
+    });
 }
