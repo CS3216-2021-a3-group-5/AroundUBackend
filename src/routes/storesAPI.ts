@@ -82,10 +82,6 @@ export async function updateStore(req: Request, res: Response) {
             company_name: res.locals.jwt.company_name
         };
         await updateStoreRow(newStore);
-        await deleteRowByStore(newStore.store_id);
-        await Promise.all(newStore.promotionIDs.map(async (id: number) => {
-            await insertPromotionAtStoreRow(id, newStore.store_id)
-        }))
         return res.status(OK).send();
     } catch (err) {
         return res.status(BADREQUEST).send(err)
