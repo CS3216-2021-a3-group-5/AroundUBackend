@@ -55,7 +55,7 @@ export async function deleteUserStore(req: Request, res: Response) {
         }
         await deleteStoreRow(store_id)
         return res.status(OK).json({
-            message: "deletion success!"
+            message: "Deletion success!"
         })
     } catch (err) {
         return res.status(FORBIDDEN).json({
@@ -66,6 +66,7 @@ export async function deleteUserStore(req: Request, res: Response) {
 
 
 export async function updateStore(req: Request, res: Response) {
+    let body = JSON.parse(req.body)
     try {
         let store = await selectStoreCompanyRowByCompany(req.body.store_id)
         if (store?.company_name != res.locals.jwt.company_name) {
@@ -74,15 +75,17 @@ export async function updateStore(req: Request, res: Response) {
             })
         }
         const newStore = {
-            store_id: req.body.store_id,
-            address: req.body.address,
-            location: req.body.location,
-            opening_hours: req.body.opening_hours,
-            promotionIDs: req.body.promotionIDs,
+            store_id: body.store_id,
+            address: body.address,
+            location: body.location,
+            opening_hours: body.opening_hours,
+            promotionIDs: body.promotionIDs,
             company_name: res.locals.jwt.company_name
         };
         await updateStoreRow(newStore);
-        return res.status(OK).send();
+        return res.status(OK).json({
+          message: "Successfully updated!"
+        });
     } catch (err) {
         return res.status(BADREQUEST).send(err)
     }

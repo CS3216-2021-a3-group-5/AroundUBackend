@@ -25,10 +25,10 @@ export async function selectPromotionRowById(id: number): Promise<Promotion | nu
 }
 
 export function updatePromotionRow(promo: Promotion): Promise<QueryResult> {
-    return pool.query('UPDATE promotions SET name = $1, end_date = $2, details = $3 WHERE id = $4',
+    return pool.query('UPDATE promotions SET promo_name = $1, end_date = $2, details = $3 WHERE promotion_id = $4',
         [promo.promo_name, promo.end_date, promo.details, promo.promotion_id]);
 }
 
 export function deletePromotionRow(promo_id: number): Promise<QueryResult> {
-    return pool.query('DELETE FROM promotions WHERE id = $1', [promo_id]);
+    return pool.query('DELETE FROM promotions WHERE promotion_id = $1', [promo_id]);
 }
