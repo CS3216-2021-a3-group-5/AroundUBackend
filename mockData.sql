@@ -129,28 +129,28 @@ INSERT INTO company_logos (
 )
 VALUES (
            'LemonInc',
-           'images\Company 1',
-           'image/jpeg'
+           'images\Lemon',
+           'image/png'
        ),
        (
            'PotatoMan',
-           'images\Company 2',
-           'image/jpeg'
+           'images\Potato',
+           'image/png'
        ),
        (
            'Cucumber Foot Reflexology',
-           'images\Company 2',
-           'image/jpeg'
+           'images\Cucumber',
+           'image/png'
        ),
        (
            'MANGOsTeen',
-           'images\Company 3',
-           'image/jpeg'
+           'images\Mangosteen',
+           'image/png'
        ),
        (
            'ValueCents',
-           'images\Company 3',
-           'image/jpeg'
+           'images\Cents',
+           'image/png'
        );
 
 INSERT INTO promotion_pictures (
@@ -163,35 +163,35 @@ VALUES (
             1,
             'Promo1',
            'images\Promo1',
-           'image/jpeg'
+           'image/png'
        ),
        (
             2,
             'Promo2',
             'images\Promo2',
-            'image/jpeg'
+            'image/png'
        ),
        (
             3,
             'Promo3',
             'images\Promo3',
-            'image/jpeg'
+            'image/png'
        ),
        (
             4,
             'Promo4',
-            'images\Promo3',
-            'image/jpeg'
+            'images\Promo4',
+            'image/png'
        ),
        (
             5,
             'Promo5',
-            'images\Promo3',
-            'image/jpeg'
+            'images\Promo5',
+            'image/png'
        ),
        (
             6,
             'Promo6',
-            'images\Promo3',
-            'image/jpeg'
+            'images\Promo6',
+            'image/png'
        );
