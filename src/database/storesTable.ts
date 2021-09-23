@@ -8,8 +8,9 @@ export function insertStoreRow(store: Store): Promise<QueryResult> {
 }
 
 export function updateStoreRow(store: Store): Promise<QueryResult> {
-    return pool.query('UPDATE stores SET company_name = $1, longitude = $2, latitude = $3, address = $4, opening_hours = $5 WHERE id = $6',
-        [store.company_name, store.location.lon, store.location.lat, store.address, store.opening_hours, store.store_id]);
+    console.log(store)
+    return pool.query('UPDATE stores SET longitude = $1, latitude = $2, address = $3, opening_hours = $4 WHERE store_id = $5',
+        [store.location.lon, store.location.lat, store.address, store.opening_hours, store.store_id]);
 }
 
 export function getStoreByIdWithCompany(id: number): Promise<QueryResult> {
@@ -28,7 +29,6 @@ export async function selectStoreCompanyRowByCompany(id: number): Promise<Store 
         opening_hours: data[0].opening_hours,
         promotionIDs: [],
         company_name: data[0].company_name
-
     }
 }
 
@@ -53,8 +53,8 @@ export function selectAllStoresFromCompany(): Promise<QueryResult> {
     return pool.query('SELECT * FROM stores JOIN companies ON stores.company_name = companies.company_name');
 }
 
-export function deleteStoreRow(store: Store): Promise<QueryResult> {
-    return pool.query('DELETE FROM stores WHERE id = $1', [store.store_id]);
+export function deleteStoreRow(store_id: number): Promise<QueryResult> {
+    return pool.query('DELETE FROM stores WHERE store_id = $1', [store_id]);
 }
 
 

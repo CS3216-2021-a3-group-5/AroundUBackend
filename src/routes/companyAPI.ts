@@ -65,7 +65,7 @@ export async function handlePreflight(req: Request, res: Response) {
 
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
 
   return res.status(OK).json({
@@ -91,9 +91,10 @@ export async function updateCompanyDetails(req: Request, res: Response) {
   res.setHeader("Access-Control-Allow-Headers",
       "Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
   const body = JSON.parse(req.body)
+  console.log(`body ${body}`)
   try {
     const updatedCompany: Company = {
-      password: await hashPassword(body.password),
+      password: "",
       email: body.email,
       category: body.category,
       contact_number: body.contact_number,

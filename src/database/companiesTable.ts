@@ -8,8 +8,8 @@ export function insertCompanyRow(co: Company): Promise<QueryResult> {
 }
 
 export function updateCompanyRow(co: Company): Promise<QueryResult> {
-    return pool.query('UPDATE companies SET name = $1, password = $2, contact_number = $3, category = $4 WHERE email = $5',
-        [co.company_name, co.password, co.contact_number, co.category,  co.email]);
+    return pool.query('UPDATE companies SET contact_number = $1, category = $2 WHERE email = $3',
+        [co.contact_number, co.category, co.email]);
 }
 
 export async function selectCompanyRowByEmail(email: string): Promise<Company> {

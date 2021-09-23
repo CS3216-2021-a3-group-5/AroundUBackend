@@ -71,7 +71,7 @@ routes.options('/store/id', handlePreflight);
 routes.post('/store/new', extractJWT, createNewStore);
 routes.options('/store/new', handlePreflight);
 routes.put('/store', extractJWT, updateStore);
-routes.delete('/store', deleteUserStore);
+routes.delete('/store', extractJWT, deleteUserStore);
 routes.options('/store', handlePreflight);
 
 // Promotion APIs
@@ -79,7 +79,7 @@ routes.get('/promotion/company', extractJWT, getUserPromotions);
 routes.options('/promotion/company', handlePreflight);
 routes.post('/promotion', extractJWT, createNewPromotion);
 routes.put('/promotion', extractJWT, updatePromo);
-routes.delete('/promotion', deleteUserPromotion);
+routes.delete('/promotion', extractJWT, deleteUserPromotion);
 routes.options('/promotion', handlePreflight);
 routes.delete('/promotion/fromStore', extractJWT, removePromoFromStore);
 routes.options('/promotion/fromStore', handlePreflight);
