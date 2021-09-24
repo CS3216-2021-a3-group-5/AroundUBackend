@@ -25,15 +25,15 @@ export const promoPicUpload = multer({
     dest: "images"
 })
 
-export function postLogo(req: Request, res: Response) {
-    console.log("Here")
-    
+export async function postLogo(req: Request, res: Response) {
     // @ts-ignore
     const { filename, mimetype } = req.file;
-    console.log(req.params);
     const filepath = req.file?.path;
-    console.log(`filename: ${filename}`)
-    console.log(`filepath: ${filepath}`)
+    console.log(filename)
+    console.log(mimetype)
+    console.log(filepath)
+    await pool.query('DELETE FROM company_logos WHERE filename = $1', [filename]);
+
     pool.query('INSERT INTO company_logos (filename, filepath, mimetype) VALUES ($1, $2, $3)',
         [filename, filepath, mimetype], (error: Error, results: QueryResult) => {
             if (error) {
@@ -43,12 +43,14 @@ export function postLogo(req: Request, res: Response) {
         });
 }
 
-export function postPromoPic(req: Request, res: Response) {
+export async function postPromoPic(req: Request, res: Response) {
     // @ts-ignore
     const { filename, mimetype } = req.file;
     const promotion_id = req.params.promo_id;
     console.log(req.params);
     const filepath = req.file?.path;
+    await pool.query('DELETE FROM promotion_pictures WHERE promotion_id = $1', [req.params.promo_id]);
+
     pool.query('INSERT INTO promotion_pictures (promotion_id, filename, filepath, mimetype) VALUES ($1, $2, $3, $4)',
         [promotion_id, filename, filepath, mimetype], (error: Error, results: QueryResult) => {
             if (error) {

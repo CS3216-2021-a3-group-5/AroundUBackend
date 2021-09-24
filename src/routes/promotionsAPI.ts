@@ -20,7 +20,9 @@ export async function createNewPromotion(req: Request, res: Response) {
             details: body.details,
             storeIDs: body.store_ids
         })
-        return res.status(OK).send("Creation success!")
+        return res.status(OK).json({
+          "promotion_id": body.promotion_id
+        })
     } catch (err) {
         return res.status(BADREQUEST).send(err)
     }
