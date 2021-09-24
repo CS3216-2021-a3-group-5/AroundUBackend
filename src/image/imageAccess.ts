@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {NOTFOUND, OK} from "../statuscodes/statusCode";
+import {BADREQUEST, INTERNAL_SERVER_ERROR, NOTFOUND, OK} from "../statuscodes/statusCode";
 import {pool} from "../database/database";
 import {QueryResult} from "pg";
 
@@ -71,13 +71,17 @@ export function getLogo(req: Request, res: Response) {
     console.log(filename);
     pool.query('SELECT * FROM company_logos WHERE filename = $1', [filename], (error: Error, results: QueryResult) => {
         if (error) {
-            res.status(404).json({success: false, message: 'not found', stack: error.stack})
+            res.status(NOTFOUND).json({success: false, message: 'not found', stack: error.stack})
         }
         const images = results.rows;
         if (images[0]) {
-            const dirname = path.resolve();
-            const fullfilepath = path.join(dirname, images[0].filepath);
-            return res.status(OK).type(images[0].mimetype).sendFile(fullfilepath);
+            try {
+                const dirname = path.resolve();
+                const fullfilepath = path.join(dirname, images[0].filepath);
+                return res.status(OK).type(images[0].mimetype).sendFile(fullfilepath);
+            } catch (err) {
+                return res.status(INTERNAL_SERVER_ERROR).send({success: false, message: 'record in database but image not found', error: err})
+            }
         }
         res.status(NOTFOUND).json({success: false, message: 'no records in database'});
     });
@@ -94,9 +98,13 @@ export function getPromoPics(req: Request, res: Response) {
         }
         const images = results.rows;
         if (images[0]) {
-            const dirname = path.resolve();
-            const fullfilepath = path.join(dirname, images[0].filepath);
-            return res.status(OK).type(images[0].mimetype).sendFile(fullfilepath);
+            try {
+                const dirname = path.resolve();
+                const fullfilepath = path.join(dirname, images[0].filepath);
+                return res.status(OK).type(images[0].mimetype).sendFile(fullfilepath);
+            } catch (err) {
+                return res.status(INTERNAL_SERVER_ERROR).send({success: false, message: 'record in database but image not found', error: err})
+            }
         }
         res.status(NOTFOUND).json({success: false, message: 'no records in database'});
     });
