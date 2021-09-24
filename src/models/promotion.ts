@@ -30,9 +30,10 @@ export async function getListOfPromotionsOfCompany(companyName: string): Promise
   return Promise.all(promotions)
 }
 
-export async function saveNewPromotion(newPromotion: Promotion) {
+export async function saveNewPromotion(newPromotion: Promotion): Promise<number> {
   let newPromoID = (await insertPromotionRow(newPromotion)).rows[0].promotion_id
   await Promise.all(newPromotion.storeIDs.map(async (store_id) => {
     await insertPromotionAtStoreRow(newPromoID, store_id)
   }))
+  return newPromoID
 }

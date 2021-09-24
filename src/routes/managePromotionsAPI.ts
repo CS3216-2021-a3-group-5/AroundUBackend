@@ -9,15 +9,17 @@ export async function createNewPromotion(req: Request, res: Response) {
   
     try {
         const body = JSON.parse(req.body)
-        await saveNewPromotion({
-            promotion_id: body.promotion_id,
+        const newId = await saveNewPromotion({
+            promotion_id: null,
             company_name: res.locals.jwt.company_name,
             promo_name: body.promo_name,
             end_date: body.end_date,
             details: body.details,
             storeIDs: body.store_ids
         })
-        return res.status(OK).send("Creation success!")
+        return res.status(OK).json({
+            newid: newId
+        })
     } catch (err) {
         return res.status(BADREQUEST).send(err)
     }
