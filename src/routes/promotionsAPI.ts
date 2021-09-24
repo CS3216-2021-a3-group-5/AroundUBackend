@@ -19,10 +19,12 @@ export async function createNewPromotion(req: Request, res: Response) {
             end_date: body.end_date,
             details: body.details,
             storeIDs: body.store_ids
-        })
-        return res.status(OK).json({
-          "promotion_id": body.promotion_id
-        })
+        }).then((promotion_id) => {
+          console.log(promotion_id)
+          return res.status(OK).json({
+          "promotion_id": promotion_id
+        })})
+        
     } catch (err) {
         return res.status(BADREQUEST).send(err)
     }
