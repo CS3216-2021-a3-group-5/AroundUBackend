@@ -8,7 +8,7 @@ const path = require('path');
 
 const logoStorage = multer.diskStorage({
     destination: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
-        cb(null, 'images')
+        cb(null, 'images');
     },
     filename: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
         const company = req.params.company;
@@ -20,9 +20,20 @@ const logoStorage = multer.diskStorage({
 // Create multer object
 export const logoUpload = multer({ storage: logoStorage })
 
+const promoPicStorage = multer.diskStorage({
+    destination: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
+        cb(null, 'images');
+    },
+    filename: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
+        const id = req.params.promo_id;
+        console.log(id);
+        cb(null, id)
+    }
+});
+
 // Create multer object
 export const promoPicUpload = multer({
-    dest: "images"
+    storage: promoPicStorage
 })
 
 export async function postLogo(req: Request, res: Response) {
