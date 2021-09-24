@@ -115,7 +115,7 @@ export async function getNearbyStores(loc: geoutils.LatLon): Promise<NearbyStore
             promotions: promos
         }
     }))
-    return storeData.filter((x): x is NearbyStoreData => x !== null)
+    return storeData.filter((x): x is NearbyStoreData => x !== undefined)
 }
 
 
