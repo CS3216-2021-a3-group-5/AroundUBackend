@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {OK} from "../statuscodes/statusCode";
+import {NOTFOUND, OK} from "../statuscodes/statusCode";
 import {pool} from "../database/database";
 import {QueryResult} from "pg";
 
@@ -33,7 +33,6 @@ export async function postLogo(req: Request, res: Response) {
     console.log(mimetype)
     console.log(filepath)
     await pool.query('DELETE FROM company_logos WHERE filename = $1', [filename]);
-
     pool.query('INSERT INTO company_logos (filename, filepath, mimetype) VALUES ($1, $2, $3)',
         [filename, filepath, mimetype], (error: Error, results: QueryResult) => {
             if (error) {
@@ -50,7 +49,6 @@ export async function postPromoPic(req: Request, res: Response) {
     console.log(req.params);
     const filepath = req.file?.path;
     await pool.query('DELETE FROM promotion_pictures WHERE promotion_id = $1', [req.params.promo_id]);
-
     pool.query('INSERT INTO promotion_pictures (promotion_id, filename, filepath, mimetype) VALUES ($1, $2, $3, $4)',
         [promotion_id, filename, filepath, mimetype], (error: Error, results: QueryResult) => {
             if (error) {
@@ -81,7 +79,7 @@ export function getLogo(req: Request, res: Response) {
             const fullfilepath = path.join(dirname, images[0].filepath);
             return res.status(OK).type(images[0].mimetype).sendFile(fullfilepath);
         }
-        return Promise.reject(new Error('Image does not exist'));
+        res.status(NOTFOUND).json({success: false, message: 'no records in database'});
     });
  }
 
@@ -92,7 +90,7 @@ export function getPromoPics(req: Request, res: Response) {
     console.log("ID:" + promotion_id);
     pool.query('SELECT * FROM promotion_pictures WHERE promotion_id = $1', [promotion_id], (error: Error, results: QueryResult) => {
         if (error) {
-            res.status(404).json({success: false, message: 'not found', stack: error.stack})
+            res.status(NOTFOUND).json({success: false, message: 'not found', stack: error.stack})
         }
         const images = results.rows;
         if (images[0]) {
@@ -100,6 +98,6 @@ export function getPromoPics(req: Request, res: Response) {
             const fullfilepath = path.join(dirname, images[0].filepath);
             return res.status(OK).type(images[0].mimetype).sendFile(fullfilepath);
         }
-        return Promise.reject(new Error('Image does not exist'));
+        res.status(NOTFOUND).json({success: false, message: 'no records in database'});
     });
 }
