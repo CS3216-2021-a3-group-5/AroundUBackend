@@ -49,7 +49,20 @@ export async function registerCompany(req: Request, res: Response) {
     }
     await insertCompanyRow(newUser)
   } catch (err) {
-    console.log(err)
+    if (err instanceof Error) {
+      if (err.message == `duplicate key value violates unique constraint "companies_company_name_key"`) {
+        return res.status(BADREQUEST).json({
+          message: "The shop name has been used." // Need to handle err
+        })
+      } else if (err.message == `duplicate key value violates unique constraint "companies_pkey"`) {
+        return res.status(BADREQUEST).json({
+          message: "The email has been used." // Need to handle err
+        })
+      }
+      return res.status(BADREQUEST).json({
+        message: err.message // Need to handle err
+      })
+    }
     return res.status(BADREQUEST).json({
       message: "Something bad happen in our server" // Need to handle err
     })

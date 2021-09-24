@@ -26,10 +26,14 @@ export const promoPicUpload = multer({
 })
 
 export function postLogo(req: Request, res: Response) {
+    console.log("Here")
+    
     // @ts-ignore
     const { filename, mimetype } = req.file;
     console.log(req.params);
     const filepath = req.file?.path;
+    console.log(`filename: ${filename}`)
+    console.log(`filepath: ${filepath}`)
     pool.query('INSERT INTO company_logos (filename, filepath, mimetype) VALUES ($1, $2, $3)',
         [filename, filepath, mimetype], (error: Error, results: QueryResult) => {
             if (error) {
@@ -61,6 +65,7 @@ export interface ImageFile {
 
 export function getLogo(req: Request, res: Response) {
     res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
 
     const filename = req.params.company;
     console.log(filename);
