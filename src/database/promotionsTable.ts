@@ -8,11 +8,11 @@ export function insertPromotionRow(promo: Promotion): Promise<QueryResult> {
 }
 
 export function selectPromotionRowByCompany(company_name: string): Promise<QueryResult> {
-    return pool.query('SELECT * FROM promotions WHERE company_name = $1', [company_name]);
+    return pool.query('SELECT * FROM promotions WHERE company_name = $1 AND end_date >= CURRENT_DATE', [company_name]);
 }
 
 export async function selectPromotionRowById(id: number): Promise<Promotion | null> {
-    let row = (await pool.query('SELECT * FROM promotions WHERE promotion_id = $1', [id])).rows
+    let row = (await pool.query('SELECT * FROM promotions WHERE promotion_id = $1 AND end_date >= CURRENT_DATE', [id])).rows
     if (row.length ==0) return null
     return {
         promotion_id: row[0].promotion_id,
@@ -25,7 +25,7 @@ export async function selectPromotionRowById(id: number): Promise<Promotion | nu
 }
 
 export async function getPromotionCompanyName(id: number): Promise<string | null> {
-    let row = (await pool.query('SELECT company_name FROM promotions WHERE promotion_id = $1', [id])).rows
+    let row = (await pool.query('SELECT company_name FROM promotions WHERE promotion_id = $1 AND end_date >= CURRENT_DATE', [id])).rows
     if (row.length ==0) return null
     return row[0].company_name
 }
